@@ -353,7 +353,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
     }
     @Override
     public void updateType(int typeid, String typeName, int keep, int newTypeid){
-        String sql = "UPDATE Type SET TypeID=?, typeName=?, Keep=? WHERE TypeID=?";
+        String sql = "UPDATE Type SET TypeID=?, Name=?, Keep=? WHERE TypeID=?";
 
         try(Connection conn = this.connectDB()){
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -444,28 +444,127 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
         return items;
     }
 
-    /*@Override
-    public String[] getFridgeRow(int fid) throws RemoteException {
-        return new String[0];
+    @Override
+    public String[] getFridgeItem(int fid, int itemid) throws RemoteException {
+        String sql = "SELECT * FROM Fridge WHERE FridgeID=? AND ItemID=?";
+        ResultSet rset = null;
+        String[] itemInfo = new String[4];
+        try(Connection conn = this.connectDB()){
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+
+            pstmt.setInt(1, fid);
+            pstmt.setInt(2, itemid);
+
+            rset = pstmt.executeQuery();
+            itemInfo[0] = Integer.toString(rset.getInt("FridgeID"));
+            itemInfo[1] = Integer.toString(rset.getInt("ItemID"));
+            itemInfo[2] = (rset.getDate("Expiration").toString());
+            itemInfo[3] = Integer.toString((rset.getInt("Amount")));
+
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+
+
+        return itemInfo;
+    }
+
+    @Override
+    public ArrayList<String[]> getFridge(int fid) throws RemoteException{
+        String sql = "SELECT * FROM Fridge WHERE Fridge=?";
+        ResultSet rset = null;
+        ArrayList<String[]> items = new ArrayList<>();
+
+        try(Connection conn = this.connectDB()){
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, fid);
+            rset = pstmt.executeQuery();
+            while(rset.next()) {
+                String[] itemInfo = new String[4];
+                itemInfo[0] = Integer.toString(rset.getInt("FridgeID"));
+                itemInfo[1] = Integer.toString(rset.getInt("ItemID"));
+                itemInfo[2] = (rset.getDate("Expiration").toString());
+                itemInfo[3] = Integer.toString((rset.getInt("Amount")));
+                items.add(itemInfo);
+            }
+
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return items;
     }
 
     @Override
     public ArrayList<String[]> getAllFridgeRows() throws RemoteException {
-        return null;
+        String sql = "SELECT * FROM Fridge";
+        ResultSet rset = null;
+        ArrayList<String[]> items = new ArrayList<>();
+
+        try(Connection conn = this.connectDB()){
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            rset = pstmt.executeQuery();
+            while(rset.next()) {
+                String[] itemInfo = new String[4];
+                itemInfo[0] = Integer.toString(rset.getInt("FridgeID"));
+                itemInfo[1] = Integer.toString(rset.getInt("ItemID"));
+                itemInfo[2] = (rset.getDate("Expiration").toString());
+                itemInfo[3] = Integer.toString((rset.getInt("Amount")));
+                items.add(itemInfo);
+            }
+
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return items;
     }
 
     @Override
     public void createFridgeRow(int fid, int itemid, Date expiration, int amount) throws RemoteException {
+        String sql = "INSERT INTO Fridge(FridgeID, ItemID, Expiration, Amount) VALUES(?,?,?,?)";
 
+        try(Connection conn = this.connectDB()){
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, fid);
+            pstmt.setInt(2, itemid);
+            pstmt.setDate(3, (java.sql.Date) expiration);
+            pstmt.setInt(4, amount);
+            pstmt.execute();
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
     }
 
     @Override
     public void updateFridgeRow(int fid, int itemid, int newFid, int newItemid, Date newExpiration, int newAmount) throws RemoteException {
+        String sql = "UPDATE Fridge SET FridgeID=?, ItemID=?, Expiration=?, Amount=? WHERE FridgeID=? AND ItemID=?";
 
+        try(Connection conn = this.connectDB()){
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+
+            pstmt.setInt(1, newFid);
+            pstmt.setInt(2, newItemid);
+            pstmt.setDate(3, (java.sql.Date) newExpiration);
+            pstmt.setInt(4, newAmount);
+            pstmt.setInt(5, fid);
+            pstmt.setInt(6, itemid);
+            pstmt.execute();
+
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
     }
 
     @Override
     public void deleteFridgeRow(int fid, int itemid) {
+        String sql = "DELETE FROM Fridge WHERE FridgeID=? AND ItemID=?";
 
-    }*/
+        try(Connection conn = this.connectDB()){
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1,fid);
+            pstmt.setInt(2, itemid);
+            pstmt.execute();
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+    }
 }

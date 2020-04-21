@@ -71,8 +71,11 @@ public interface SkeletonSOAP {
     @WebMethod
     ArrayList<Item> getFridgeContents(int fid) throws RemoteException, SQLException;
 
-    /*@WebMethod
-    String[] getFridgeRow(int fid) throws  RemoteException;
+    @WebMethod
+    String[] getFridgeItem(int fid, int itemid) throws  RemoteException;
+
+    @WebMethod
+    ArrayList<String[]> getFridge(int fid) throws RemoteException;
 
     @WebMethod
     ArrayList<String[]> getAllFridgeRows() throws  RemoteException;
@@ -84,6 +87,6 @@ public interface SkeletonSOAP {
     void updateFridgeRow(int fid, int itemid, int newFid, int newItemid, Date newExpiration, int newAmount ) throws RemoteException;
 
     @WebMethod
-    void deleteFridgeRow(int fid, int itemid) throws RemoteException;*/
+    void deleteFridgeRow(int fid, int itemid) throws RemoteException;
 }
 

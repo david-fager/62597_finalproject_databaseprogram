@@ -117,29 +117,34 @@ public class DB_SOAP implements SkeletonSOAP {
         return rmi.getFridgeContents(fid);
     }
 
-    /*@Override
-    public String[] getFridgeRow(int fid) throws RemoteException {
-        return new String[0];
+    @Override
+    public String[] getFridgeItem(int fid, int itemid) throws RemoteException {
+        return rmi.getFridgeItem(fid, itemid);
+    }
+
+    @Override
+    public ArrayList<String[]> getFridge(int fid) throws RemoteException{
+        return rmi.getFridge(fid);
     }
 
     @Override
     public ArrayList<String[]> getAllFridgeRows() throws RemoteException {
-        return null;
+        return rmi.getAllFridgeRows();
     }
 
     @Override
     public void createFridgeRow(int fid, int itemid, Date expiration, int amount) throws RemoteException {
-
+        rmi.createFridgeRow(fid, itemid,expiration,amount);
     }
 
     @Override
     public void updateFridgeRow(int fid, int itemid, int newFid, int newItemid, Date newExpiration, int newAmount) throws RemoteException {
-
+        rmi.updateFridgeRow(fid, itemid, newFid, newItemid, newExpiration, newAmount);
     }
 
     @Override
-    public void deleteFridgeRow(int fid, int itemid) throws RemoteException {*/
-
-    //}
+    public void deleteFridgeRow(int fid, int itemid) throws RemoteException {
+        rmi.deleteFridgeRow(fid, itemid);
+    }
 
 }
