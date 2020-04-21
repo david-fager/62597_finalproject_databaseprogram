@@ -7,6 +7,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -312,7 +313,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
     //Foodtype
     @Override
     public void createType(int typeid, String name, int keep){
-        String sql = "INSERT INTO Type(TypeID, TypeName, Keep) VALUES(?,?,?) ";
+        String sql = "INSERT INTO Type(TypeID, Name, Keep) VALUES(?,?,?) ";
 
         try(Connection conn = this.connectDB()){
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -441,5 +442,30 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
             items.add(item);
         }
         return items;
+    }
+
+    @Override
+    public String[] getFridgeRow(int fid) throws RemoteException {
+        return new String[0];
+    }
+
+    @Override
+    public ArrayList<String[]> getAllFridgeRows() throws RemoteException {
+        return null;
+    }
+
+    @Override
+    public void createFridgeRow(int fid, int itemid, Date expiration, int amount) throws RemoteException {
+
+    }
+
+    @Override
+    public void updateFridgeRow(int fid, int itemid, int newFid, int newItemid, Date newExpiration, int newAmount) throws RemoteException {
+
+    }
+
+    @Override
+    public void deleteFridgeRow(int fid, int itemid) {
+
     }
 }

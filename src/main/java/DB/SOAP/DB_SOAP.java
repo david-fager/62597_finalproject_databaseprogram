@@ -8,6 +8,7 @@ import javax.jws.WebService;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 
 
 @SuppressWarnings("/NonAsciiCharacters")
@@ -115,4 +116,30 @@ public class DB_SOAP implements SkeletonSOAP {
     public ArrayList<Item> getFridgeContents(int fid) throws RemoteException, SQLException {
         return rmi.getFridgeContents(fid);
     }
+
+    @Override
+    public String[] getFridgeRow(int fid) throws RemoteException {
+        return new String[0];
+    }
+
+    @Override
+    public ArrayList<String[]> getAllFridgeRows() throws RemoteException {
+        return null;
+    }
+
+    @Override
+    public void createFridgeRow(int fid, int itemid, Date expiration, int amount) throws RemoteException {
+
+    }
+
+    @Override
+    public void updateFridgeRow(int fid, int itemid, int newFid, int newItemid, Date newExpiration, int newAmount) throws RemoteException {
+
+    }
+
+    @Override
+    public void deleteFridgeRow(int fid, int itemid) throws RemoteException {
+
+    }
+
 }

@@ -5,6 +5,7 @@ import DB.Item;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.jws.WebMethod;
 import javax.jws.WebService;
 
@@ -69,5 +70,20 @@ public interface SkeletonSOAP {
 
     @WebMethod
     ArrayList<Item> getFridgeContents(int fid) throws RemoteException, SQLException;
+
+    @WebMethod
+    String[] getFridgeRow(int fid) throws  RemoteException;
+
+    @WebMethod
+    ArrayList<String[]> getAllFridgeRows() throws  RemoteException;
+
+    @WebMethod
+    void createFridgeRow(int fid, int itemid, Date expiration, int amount) throws RemoteException;
+
+    @WebMethod
+    void updateFridgeRow(int fid, int itemid, int newFid, int newItemid, Date newExpiration, int newAmount ) throws RemoteException;
+
+    @WebMethod
+    void deleteFridgeRow(int fid, int itemid) throws RemoteException;
 }
 

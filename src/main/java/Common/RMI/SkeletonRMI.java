@@ -4,6 +4,7 @@ import DB.Item;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 
 @SuppressWarnings("NonAsciiCharacters")
 public interface SkeletonRMI extends java.rmi.Remote {
@@ -46,4 +47,17 @@ public interface SkeletonRMI extends java.rmi.Remote {
     ArrayList<String[]> getTypes() throws java.rmi.RemoteException;
 
     ArrayList<Item> getFridgeContents(int fid) throws java.rmi.RemoteException, SQLException;
+
+    String[] getFridgeRow(int fid) throws  java.rmi.RemoteException;
+
+    ArrayList<String[]> getAllFridgeRows() throws  java.rmi.RemoteException;
+
+    void createFridgeRow(int fid, int itemid, Date expiration, int amount) throws java.rmi.RemoteException;
+
+    void updateFridgeRow(int fid, int itemid, int newFid, int newItemid, Date newExpiration, int newAmount ) throws java.rmi.RemoteException;
+
+    void deleteFridgeRow(int fid, int itemid);
+
+
+
 }
