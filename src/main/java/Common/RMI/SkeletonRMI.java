@@ -58,7 +58,7 @@ public interface SkeletonRMI extends java.rmi.Remote {
 
     void updateFridgeRow(int fid, int itemid, int newFid, int newItemid, Date newExpiration, int newAmount ) throws java.rmi.RemoteException;
 
-    void deleteFridgeRow(int fid, int itemid);
+    void deleteFridgeRow(int fid, int itemid) throws java.rmi.RemoteException;
 
 
 

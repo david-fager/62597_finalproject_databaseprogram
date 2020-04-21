@@ -560,7 +560,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
 
         try(Connection conn = this.connectDB()){
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1,fid);
+            pstmt.setInt(1, fid);
             pstmt.setInt(2, itemid);
             pstmt.execute();
         } catch (SQLException e){
