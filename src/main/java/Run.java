@@ -23,11 +23,11 @@ public class Run {
         // SOAP for the javaprogram terminal client
         java.rmi.registry.LocateRegistry.createRegistry(9920);
         rmi = new DB_RMI();
-        Naming.rebind("rmi://localhost:9920/my_fridge_local", rmi);
+        Naming.rebind("rmi://localhost:9920/my_fridge_rmi_remote", rmi);
 
 
         soap = new DB_SOAP(rmi) ;
-        Endpoint.publish("http://[::]:58008/my_fridge_remote", soap);
+        Endpoint.publish("http://[::]:58008/my_fridge_soap_remote", soap);
 
         System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + "Server started");
 
