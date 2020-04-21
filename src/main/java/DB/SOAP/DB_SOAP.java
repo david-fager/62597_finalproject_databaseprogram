@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 
-@SuppressWarnings("ALL")
+@SuppressWarnings("/NonAsciiCharacters")
 @WebService(endpointInterface = "Common.SOAP.SkeletonSOAP")
 public class DB_SOAP implements SkeletonSOAP {
 
