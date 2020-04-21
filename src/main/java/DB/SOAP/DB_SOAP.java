@@ -117,7 +117,7 @@ public class DB_SOAP implements SkeletonSOAP {
         return rmi.getFridgeContents(fid);
     }
 
-    @Override
+    /*@Override
     public String[] getFridgeRow(int fid) throws RemoteException {
         return new String[0];
     }
@@ -138,8 +138,8 @@ public class DB_SOAP implements SkeletonSOAP {
     }
 
     @Override
-    public void deleteFridgeRow(int fid, int itemid) throws RemoteException {
+    public void deleteFridgeRow(int fid, int itemid) throws RemoteException {*/
 
-    }
+    //}
 
 }

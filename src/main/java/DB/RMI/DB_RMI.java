@@ -444,7 +444,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
         return items;
     }
 
-    @Override
+    /*@Override
     public String[] getFridgeRow(int fid) throws RemoteException {
         return new String[0];
     }
@@ -467,5 +467,5 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
     @Override
     public void deleteFridgeRow(int fid, int itemid) {
 
-    }
+    }*/
 }
