@@ -1,9 +1,15 @@
+package DB.RMI;
 
+import Common.RMI.SkeletonRMI;
+import DB.Item;
+
+import java.rmi.RemoteException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Run {
+
+public class DB_RMI implements SkeletonRMI {
 
 
     private static Connection connectDB(){
@@ -23,7 +29,7 @@ public class Run {
         return conn;
     }
 
-    public int createUserID() throws SQLException {
+    private int createUserID() throws SQLException {
         int id;
         ResultSet rset = null;
         String sql = "SELECT UserID FROM User";
@@ -55,7 +61,7 @@ public class Run {
         return id;
     }
 
-    public int createFridgeID() throws SQLException {
+    private int createFridgeID() throws SQLException {
         int id;
         ResultSet rset = null;
         String sql = "SELECT FridgeID FROM User";
@@ -88,6 +94,7 @@ public class Run {
 
     //User
 //Creates a user and assigns a him a fridgeID
+    @Override
     public void createUser(int uid){
         String sql = "INSERT INTO User(UserID, FridgeID) VALUES(?,?)";
 
@@ -103,6 +110,7 @@ public class Run {
     }
 
     //Deletes a user by its userID
+    @Override
     public void deleteUser(int uid){
         String sql = "DELETE FROM User WHERE UserID=?";
 
@@ -116,7 +124,7 @@ public class Run {
             System.out.println(e.getMessage());
         }
     }
-
+    @Override
     public void deleteUsers(){
         String sql = "DELETE FROM User ";
 
@@ -129,8 +137,9 @@ public class Run {
         }
     }
 
-        //Redundant??
+
     //Update userID and fridgeID of user with userID = uid
+    @Override
     public void updateUser(int uid, int newuid, int fid){
         String sql = "UPDATE User SET UserID=?, FridgeID=? WHERE UserID=?";
 
@@ -146,7 +155,8 @@ public class Run {
             System.out.println(e.getMessage());
         }
     }
-        //Returns an int array containing userid and fridgeid
+    //Returns an int array containing userid and fridgeid
+    @Override
     public int[] getUser(int uid){
         String sql = "SELECT * FROM User WHERE UserID=?";
         ResultSet rset = null;
@@ -167,6 +177,7 @@ public class Run {
     }
 
     //Gets all users in an Arraylist of int arrays
+    @Override
     public ArrayList<int[]> getUsers(){
         String sql = "SELECT * FROM User ";
         ResultSet rset = null;
@@ -187,10 +198,10 @@ public class Run {
         return users;
     }
 
-
     //FoodItems
     //Create a food item with itemID = id, Name = name and TypeID = typeID
-    public void createItem(int id, String name, int typeID){
+    @Override
+    public void createItem(int id, String name, int typeid){
         String sql = "INSERT INTO Item(ItemID, Name, TypeID) VALUES(?,?,?)";
 
         try(Connection conn = this.connectDB()){
@@ -198,13 +209,14 @@ public class Run {
 
             pstmt.setInt(1, id);
             pstmt.setString(2, name);
-            pstmt.setInt(3, typeID);
+            pstmt.setInt(3, typeid);
             pstmt.execute();
         } catch (SQLException e){
             System.out.println(e.getMessage());
         }
     }
     //Remove an item with ItemID = itemid
+    @Override
     public void deleteItem(int itemid){
         String sql = "DELETE FROM Item WHERE ItemID=?";
 
@@ -218,7 +230,7 @@ public class Run {
             System.out.println(e.getMessage());
         }
     }
-
+    @Override
     public void deleteItems(){
         String sql = "DELETE FROM Item";
 
@@ -229,7 +241,9 @@ public class Run {
             System.out.println(e.getMessage());
         }
     }
+
     //Update a fooditem by itemID
+    @Override
     public void updateItem(int itemid, String itemName, int typeid, int newitemid){
         String sql = "UPDATE ITEM SET ItemID=?, ItemName=?, TypeID=? WHERE itemID=?";
 
@@ -246,7 +260,8 @@ public class Run {
             System.out.println(e.getMessage());
         }
     }
-        //Returns a string array with info about the item
+    //Returns a string array with info about the item
+    @Override
     public String[] getItem(int itemID){
         String sql = "SELECT * FROM Item WHERE ItemID=?";
         ResultSet rset = null;
@@ -266,7 +281,7 @@ public class Run {
         }
         return itemInfo;
     }
-
+    @Override
     public ArrayList<String[]> getItems(){
         String sql = "SELECT * FROM Item ";
         ResultSet rset = null;
@@ -291,12 +306,13 @@ public class Run {
     }
 
     //Foodtype
-    public void createType(int typeID, String name, int keep){
+    @Override
+    public void createType(int typeid, String name, int keep){
         String sql = "INSERT INTO Type(TypeID, TypeName, Keep) VALUES(?,?,?) ";
 
         try(Connection conn = this.connectDB()){
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, typeID);
+            pstmt.setInt(1, typeid);
             pstmt.setString(2, name);
             pstmt.setInt(3, keep);
             pstmt.execute();
@@ -304,21 +320,21 @@ public class Run {
             System.out.println(e.getMessage());
         }
     }
-
-    public void deleteType(int typeID){
+    @Override
+    public void deleteType(int typeid){
         String sql = "DELETE FROM Type WHERE TypeID=?";
 
         try(Connection conn = this.connectDB()){
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
-            pstmt.setInt(1, typeID);
+            pstmt.setInt(1, typeid);
 
             pstmt.execute();
         } catch (SQLException e){
             System.out.println(e.getMessage());
         }
     }
-
+    @Override
     public void deleteTypes(){
         String sql = "DELETE FROM Type";
 
@@ -330,17 +346,17 @@ public class Run {
             System.out.println(e.getMessage());
         }
     }
-
-    public void UpdateType(int typeID, String typeName, int keep, int newTypeID){
+    @Override
+    public void updateType(int typeid, String typeName, int keep, int newTypeid){
         String sql = "UPDATE Type SET TypeID=?, typeName=?, Keep=? WHERE TypeID=?";
 
         try(Connection conn = this.connectDB()){
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
-            pstmt.setInt(1, newTypeID );
+            pstmt.setInt(1, newTypeid );
             pstmt.setString(2, typeName);
             pstmt.setInt(3, keep);
-            pstmt.setInt(4, typeID);
+            pstmt.setInt(4, typeid);
             pstmt.execute();
 
         } catch (SQLException e){
@@ -348,15 +364,16 @@ public class Run {
         }
 
     }
-        //Returns string array containing info aobut type
-    public String[] getType(int typeID){
+    //Returns string array containing info aobut type
+    @Override
+    public String[] getType(int typeid){
         String sql = "SELECT * FROM Type WHERE TypeID=?";
         ResultSet rset = null;
         String[] itemInfo = new String[3];
         try(Connection conn = this.connectDB()){
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
-            pstmt.setInt(1, typeID);
+            pstmt.setInt(1, typeid);
 
             rset = pstmt.executeQuery();
             itemInfo[0] = Integer.toString(rset.getInt("TypeID"));
@@ -368,7 +385,7 @@ public class Run {
         }
         return itemInfo;
     }
-
+    @Override
     public ArrayList<String[]> getTypes(){
         String sql = "SELECT * FROM Type ";
         ResultSet rset = null;
@@ -391,7 +408,7 @@ public class Run {
         }
         return types;
     }
-
+    @Override
     public ArrayList<Item> getFridgeContents(int fid) throws SQLException {
         ArrayList<Item> items = new ArrayList<>();
         String sql = "SELECT FridgeID, Fridge.ItemID, Amount, Expiration, ItemName, Type.TypeID, Name, Keep\n" +
