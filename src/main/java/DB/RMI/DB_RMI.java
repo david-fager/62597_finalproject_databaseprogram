@@ -4,13 +4,17 @@ import Common.RMI.SkeletonRMI;
 import DB.Item;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class DB_RMI implements SkeletonRMI {
+public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
 
+
+    public DB_RMI() throws RemoteException {
+    }
 
     private static Connection connectDB(){
         String url = "jdbc:sqlite:C:/sqlite/db/Fridge.db";

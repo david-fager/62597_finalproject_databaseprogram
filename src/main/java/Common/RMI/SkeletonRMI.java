@@ -5,6 +5,7 @@ import DB.Item;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+@SuppressWarnings("NonAsciiCharacters")
 public interface SkeletonRMI extends java.rmi.Remote {
 
 

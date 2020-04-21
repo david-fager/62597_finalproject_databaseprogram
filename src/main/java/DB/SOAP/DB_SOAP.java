@@ -4,10 +4,14 @@ import Common.RMI.SkeletonRMI;
 import Common.SOAP.SkeletonSOAP;
 import DB.Item;
 
+import javax.jws.WebService;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+
+@SuppressWarnings("ALL")
+@WebService(endpointInterface = "Common.SOAP.SkeletonSOAP")
 public class DB_SOAP implements SkeletonSOAP {
 
     private SkeletonRMI rmi;

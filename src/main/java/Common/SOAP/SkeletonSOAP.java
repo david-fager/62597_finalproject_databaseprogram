@@ -9,7 +9,7 @@ import javax.jws.WebMethod;
 import javax.jws.WebService;
 
 
-
+@SuppressWarnings("NonAsciiCharacters")
 @WebService
 public interface SkeletonSOAP {
 
