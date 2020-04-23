@@ -51,10 +51,10 @@ public interface SkeletonSOAP {
     ArrayList<String[]> getItems() throws RemoteException;
 
     @WebMethod
-    void createType(int typeID, String name, int keep) throws RemoteException;
+    boolean createType(int typeID, String name, int keep) throws RemoteException;
 
     @WebMethod
-    void deleteType(int typeID) throws RemoteException;
+    boolean deleteType(int typeID) throws RemoteException;
 
     @WebMethod
     void deleteTypes() throws RemoteException;

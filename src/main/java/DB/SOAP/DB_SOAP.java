@@ -83,13 +83,13 @@ public class DB_SOAP implements SkeletonSOAP {
     }
 
     @Override
-    public void createType(int typeID, String name, int keep) throws RemoteException {
-        rmi.createType(typeID, name, keep);
+    public boolean createType(int typeID, String name, int keep) throws RemoteException {
+        return rmi.createType(typeID, name, keep);
     }
 
     @Override
-    public void deleteType(int typeID) throws RemoteException {
-        rmi.deleteType(typeID);
+    public boolean deleteType(int typeID) throws RemoteException {
+        return rmi.deleteType(typeID);
     }
 
     @Override

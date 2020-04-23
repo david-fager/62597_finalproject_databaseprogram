@@ -34,9 +34,9 @@ public interface SkeletonRMI extends java.rmi.Remote {
 
     ArrayList<String[]> getItems() throws java.rmi.RemoteException;
 
-    void createType(int typeid, String name, int keep) throws java.rmi.RemoteException;
+    boolean createType(int typeid, String name, int keep) throws java.rmi.RemoteException;
 
-    void deleteType(int typeid) throws java.rmi.RemoteException;
+    boolean deleteType(int typeid) throws java.rmi.RemoteException;
 
     void deleteTypes() throws java.rmi.RemoteException;
 
