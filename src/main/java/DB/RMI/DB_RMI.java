@@ -18,7 +18,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
     }
 
     private static Connection connectDB() {
-        String url = "jdbc:sqlite:C:/sqlite/db/Fridge.db";
+        String url = "jdbc:sqlite:src/main/resources/Fridge.db";
         Connection conn = null;
 
         try {
