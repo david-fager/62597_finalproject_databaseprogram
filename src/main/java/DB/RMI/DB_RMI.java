@@ -209,7 +209,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
     //Create a food item with itemID = id, Name = name and TypeID = typeID
     @Override
     public void createItem(int id, String name, int typeid) {
-        String sql = "INSERT INTO Item(ItemID, Name, TypeID) VALUES(?,?,?)";
+        String sql = "INSERT INTO Item(ItemID, ItemName, TypeID) VALUES(?,?,?)";
 
         try (Connection conn = this.connectDB()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
