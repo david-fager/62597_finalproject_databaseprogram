@@ -297,6 +297,8 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
         String sql = "SELECT * FROM Item ";
         ResultSet rset = null;
         ArrayList<String[]> items = new ArrayList<>();
+        String[] header = {"ItemID", "ItemName", "TypeID"};
+        items.add(header);
 
         try (Connection conn = this.connectDB()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -491,9 +493,11 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
 
     @Override
     public ArrayList<String[]> getFridge(int fid) throws RemoteException {
-        String sql = "SELECT * FROM Fridge WHERE Fridge=?";
+        String sql = "SELECT * FROM Fridge WHERE FridgeID=?";
         ResultSet rset = null;
         ArrayList<String[]> items = new ArrayList<>();
+        String[] header = {"FridgeID", "ItemID", "Expiration", "Amount"};
+        items.add(header);
 
         try (Connection conn = this.connectDB()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -503,7 +507,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
                 String[] itemInfo = new String[4];
                 itemInfo[0] = Integer.toString(rset.getInt("FridgeID"));
                 itemInfo[1] = Integer.toString(rset.getInt("ItemID"));
-                itemInfo[2] = (rset.getDate("Expiration").toString());
+                itemInfo[2] = rset.getString("Expiration");
                 itemInfo[3] = Integer.toString((rset.getInt("Amount")));
                 items.add(itemInfo);
             }
@@ -519,6 +523,8 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
         String sql = "SELECT * FROM Fridge";
         ResultSet rset = null;
         ArrayList<String[]> items = new ArrayList<>();
+        String[] header = {"FridgeID", "ItemID", "Expiration", "Amount"};
+        items.add(header);
 
         try (Connection conn = this.connectDB()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -527,7 +533,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
                 String[] itemInfo = new String[4];
                 itemInfo[0] = Integer.toString(rset.getInt("FridgeID"));
                 itemInfo[1] = Integer.toString(rset.getInt("ItemID"));
-                itemInfo[2] = (rset.getDate("Expiration").toString());
+                itemInfo[2] = rset.getString("Expiration");
                 itemInfo[3] = Integer.toString((rset.getInt("Amount")));
                 items.add(itemInfo);
             }
