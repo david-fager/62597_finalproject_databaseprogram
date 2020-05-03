@@ -1,4 +1,3 @@
-import Common.SOAP.SkeletonSOAP;
 import DB.RMI.DB_RMI;
 import DB.SOAP.DB_SOAP;
 
@@ -9,16 +8,14 @@ import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class Run {
-    private static DateFormat df = new SimpleDateFormat("[dd-MM-yyyy HH:mm:ss] ");
+    private static DateFormat df = new SimpleDateFormat("[dd-MM-yyyy HH:mm:ss]");
     private static DB_SOAP soap;
     private static DB_RMI rmi;
 
     public static void main(String[] args) throws RemoteException, MalformedURLException {
-        System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + "Starting server");
+        System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Starting server");
 
         // SOAP for the javaprogram terminal client
         java.rmi.registry.LocateRegistry.createRegistry(9921);
@@ -29,7 +26,7 @@ public class Run {
         soap = new DB_SOAP(rmi) ;
         Endpoint.publish("http://[::]:58008/my_fridge_soap_remote", soap);
 
-        System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + "Server started");
+        System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Server started");
 
         }
     }

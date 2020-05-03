@@ -10,7 +10,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
-
 @SuppressWarnings("/NonAsciiCharacters")
 @WebService(endpointInterface = "Common.SOAP.SkeletonSOAP")
 public class DB_SOAP implements SkeletonSOAP {
@@ -145,6 +144,11 @@ public class DB_SOAP implements SkeletonSOAP {
     @Override
     public void deleteFridgeRow(int fid, int itemid) throws RemoteException {
         rmi.deleteFridgeRow(fid, itemid);
+    }
+
+    @Override
+    public ArrayList<String[]> getTables() throws RemoteException {
+        return rmi.getTables();
     }
 
 }

@@ -9,7 +9,6 @@ import java.util.Date;
 @SuppressWarnings("NonAsciiCharacters")
 public interface SkeletonRMI extends java.rmi.Remote {
 
-
     void createUser(int uid) throws java.rmi.RemoteException;
 
     void deleteUser(int uid) throws java.rmi.RemoteException;
@@ -60,6 +59,6 @@ public interface SkeletonRMI extends java.rmi.Remote {
 
     void deleteFridgeRow(int fid, int itemid) throws java.rmi.RemoteException;
 
-
+    ArrayList<String[]> getTables() throws java.rmi.RemoteException;
 
 }

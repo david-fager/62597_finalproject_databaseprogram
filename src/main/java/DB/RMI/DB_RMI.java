@@ -6,13 +6,15 @@ import DB.Item;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-
 public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
-
+    private static DateFormat df = new SimpleDateFormat("[dd-MM-yyyy HH:mm:ss]");
 
     public DB_RMI() throws RemoteException {
     }
@@ -24,12 +26,15 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
         try {
             conn = DriverManager.getConnection(url);
             if (conn != null) {
+                System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Connected to Fridge.db at: '" + url + "'");
+                /*
                 DatabaseMetaData meta = conn.getMetaData();
                 System.out.println("The driver name is " + meta.getDriverName());
                 System.out.println("A database connection has been established!");
+                */
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in connectDB(): " + e.getMessage());
         }
         return conn;
     }
@@ -591,6 +596,32 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
             pstmt.execute();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public ArrayList<String[]> getTables() throws RemoteException {
+        String sql = "SELECT name, sql FROM sqlite_master";
+        ResultSet rset = null;
+        ArrayList<String[]> tables = new ArrayList<>();
+        String[] header = {"name", "sql"};
+        tables.add(header);
+
+        try (Connection conn = this.connectDB()) {
+            System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Performing query: '" + sql + "'");
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            rset = pstmt.executeQuery();
+            while (rset.next()) {
+                String[] tableColumns = new String[2];
+                tableColumns[0] = rset.getString("name");
+                tableColumns[1] = rset.getString("sql");
+                tables.add(tableColumns);
+            }
+
+            return tables;
+        } catch (SQLException e) {
+            System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in getTables(): " + e.getMessage());
+            return new ArrayList<>();
         }
     }
 }

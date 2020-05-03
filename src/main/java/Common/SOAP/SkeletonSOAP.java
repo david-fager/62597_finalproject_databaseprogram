@@ -9,7 +9,6 @@ import java.util.Date;
 import javax.jws.WebMethod;
 import javax.jws.WebService;
 
-
 @SuppressWarnings("NonAsciiCharacters")
 @WebService
 public interface SkeletonSOAP {
@@ -88,5 +87,9 @@ public interface SkeletonSOAP {
 
     @WebMethod
     void deleteFridgeRow(int fid, int itemid) throws RemoteException;
+
+    @WebMethod
+    ArrayList<String[]> getTables() throws RemoteException;
+
 }
 
