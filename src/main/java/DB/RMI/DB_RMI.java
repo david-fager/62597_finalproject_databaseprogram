@@ -10,7 +10,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
     //Global names for sql Queries
@@ -51,6 +50,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
         return conn;
     }
 
+    /*
     private int createUserID() throws SQLException {
         int id;
         ResultSet rset = null;
@@ -83,23 +83,24 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
 
         return id;
     }
+    */
 
-    private int createFridgeID() throws SQLException {
+    private int createFridgeID() {
         String sql = "SELECT max(" + QfridgeID + ") FROM User";
-        ResultSet rset = null;
+        ResultSet rset;
+        int fridgeID = 0;
 
         try (Connection conn = connectDB()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             rset = pstmt.executeQuery();
+
+            fridgeID = rset.getInt("max(" + QfridgeID + ")") + 1;
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in createFridgeID(): " + e.getMessage());
         }
 
-        if (rset != null)
-            return rset.getInt(QfridgeID) + 1;
-        else
-            return 0;
+        return fridgeID;
     }
 
     //User
@@ -110,6 +111,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
 
         try (Connection conn = connectDB()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
+
             pstmt.setString(1, userName);
 
             int fridgeID = createFridgeID();
@@ -171,7 +173,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
 
     //Update userID and fridgeID of user with userID = uid
     @Override
-    public boolean updateUser(String newUserName, int fid, String userName) {
+    public boolean updateUser(String userName, int fid, String newUserName) {
         String sql = "UPDATE User SET " + Qusername + "=?, " + QfridgeID + "=? WHERE " + Qusername + "=?";
         int i = 0;
 
@@ -510,13 +512,13 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
     }
 
     @Override
-    public ArrayList<String[]> getFridgeContents(int fid) throws SQLException {
+    public ArrayList<String[]> getFridgeContents(int fid) {
         ArrayList<String[]> items = new ArrayList<>();
         String[] header = {Qamount, Qexp, QitemID, QitemName, Qkeep, QtypeID, "Name"};
         items.add(header);
         String sql = "SELECT " + QfridgeID + ", Fridge." + QitemID + ", " + Qamount + ", " + Qexp + ", " + QitemName + ", Type." + QtypeID + ", " + QtypeName + ", " + Qkeep + "\n" +
                 "FROM Fridge JOIN Item ON Fridge." + QitemID + " = Item." + QitemID + " JOIN Type ON Item." + QtypeID + " = Type." + QtypeID + " WHERE " + QfridgeID + "=?";
-        ResultSet rset = null;
+        ResultSet rset;
 
         try (Connection conn = connectDB()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -720,14 +722,14 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
     }
 
     @Override
-    public ArrayList<String[]> getCompleteUser(String username) throws SQLException {
+    public ArrayList<String[]> getCompleteUser(String username) {
         ArrayList<String[]> items = new ArrayList<>();
         String[] header = {Qusername, QfridgeID, Qamount, QitemID, Qexp, QitemName, QtypeID, QtypeName, Qkeep};
         items.add(header);
         String sql = "SELECT UserName, User." + QfridgeID + ", " + Qamount + ", Fridge." + QitemID + ", " + Qexp + ", " + QitemName + ", Item." + QtypeID + ", " + QtypeName + ", " + Qkeep + "  " +
                 "FROM User JOIN Fridge ON User." + QfridgeID + " = Fridge." + QfridgeID + " JOIN Item ON Fridge." + QitemID + " = Item." + QitemID + " " +
-                "JOIN Type ON Item." + QtypeID + " = Type." + QtypeID + " WHERE QuserName = ? \n";
-        ResultSet rset = null;
+                "JOIN Type ON Item." + QtypeID + " = Type." + QtypeID + " WHERE " + Qusername + " = ?";
+        ResultSet rset;
 
         try (Connection conn = connectDB()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
