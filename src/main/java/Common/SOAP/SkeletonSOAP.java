@@ -12,19 +12,19 @@ import javax.jws.WebService;
 public interface SkeletonSOAP {
 
     @WebMethod
-    boolean createUser(int uid) throws RemoteException;
+    boolean createUser(String newUserName) throws RemoteException;
 
     @WebMethod
-    boolean deleteUser(int uid) throws RemoteException;
+    boolean deleteUser(String newUserName) throws RemoteException;
 
     @WebMethod
     boolean deleteUsers() throws RemoteException;
 
     @WebMethod
-    boolean updateUser(int uid, int newuid, int fid) throws RemoteException;
+    boolean updateUser(String newUserName, int fid, String userName) throws RemoteException;
 
     @WebMethod
-    ArrayList<String[]> getUser(int uid) throws RemoteException;
+    ArrayList<String[]> getUser(String newUserName) throws RemoteException;
 
     @WebMethod
     ArrayList<String[]> getUsers() throws RemoteException;
@@ -90,7 +90,7 @@ public interface SkeletonSOAP {
     ArrayList<String[]> getTables() throws RemoteException;
 
     @WebMethod
-    ArrayList<String[]> getEverything(String username) throws RemoteException;
+    ArrayList<String[]> getCompleteUser(String username) throws RemoteException, SQLException;
 
 }
 

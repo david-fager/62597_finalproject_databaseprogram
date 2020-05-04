@@ -21,13 +21,13 @@ public class DB_SOAP implements SkeletonSOAP {
 
 
     @Override
-    public boolean createUser(int uid) throws RemoteException {
-        return rmi.createUser(uid);
+    public boolean createUser(String userName) throws RemoteException {
+        return rmi.createUser(userName);
     }
 
     @Override
-    public boolean deleteUser(int uid) throws RemoteException {
-        return rmi.deleteUser(uid);
+    public boolean deleteUser(String userName) throws RemoteException {
+        return rmi.deleteUser(userName);
     }
 
     @Override
@@ -36,13 +36,13 @@ public class DB_SOAP implements SkeletonSOAP {
     }
 
     @Override
-    public boolean updateUser(int uid, int newuid, int fid) throws RemoteException {
-        return rmi.updateUser(uid, newuid, fid);
+    public boolean updateUser(String newUserName, int fid, String userName) throws RemoteException {
+        return rmi.updateUser(newUserName, fid, userName);
     }
 
     @Override
-    public ArrayList<String[]> getUser(int uid) throws RemoteException {
-        return rmi.getUser(uid);
+    public ArrayList<String[]> getUser(String userName) throws RemoteException {
+        return rmi.getUser(userName);
     }
 
     @Override
@@ -151,7 +151,7 @@ public class DB_SOAP implements SkeletonSOAP {
     }
 
     @Override
-    public ArrayList<String[]> getEverything(String username) throws RemoteException {
-        return null;
+    public ArrayList<String[]> getCompleteUser(String username) throws RemoteException, SQLException {
+        return rmi.getCompleteUser(username);
     }
 }

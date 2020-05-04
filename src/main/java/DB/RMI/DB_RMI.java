@@ -685,7 +685,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
     }
 
     @Override
-    public ArrayList<String[]> getEverything(String username) throws RemoteException, SQLException {
+    public ArrayList<String[]> getCompleteUser(String username) throws RemoteException, SQLException {
         ArrayList<String[]> items = new ArrayList<>();
         String[] header = {"UserName", "FridgeID", "Amount", "ItemID", "Expiration", "ItemName", "TypeID", "TypeName", "Keep"};
         items.add(header);

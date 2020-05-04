@@ -61,5 +61,5 @@ public interface SkeletonRMI extends java.rmi.Remote {
 
     ArrayList<String[]> getTables() throws java.rmi.RemoteException;
 
-    ArrayList<String[]> getEverything(String username) throws java.rmi.RemoteException, SQLException;
+    ArrayList<String[]> getCompleteUser(String username) throws java.rmi.RemoteException, SQLException;
 }
