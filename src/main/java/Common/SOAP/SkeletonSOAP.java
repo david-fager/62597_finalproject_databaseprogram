@@ -1,7 +1,5 @@
 package Common.SOAP;
 
-import DB.Item;
-
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,64 +12,64 @@ import javax.jws.WebService;
 public interface SkeletonSOAP {
 
     @WebMethod
-    void createUser(int uid) throws RemoteException;
+    String createUser(int uid) throws RemoteException;
 
     @WebMethod
-    void deleteUser(int uid) throws RemoteException;
+    String deleteUser(int uid) throws RemoteException;
 
     @WebMethod
-    void deleteUsers() throws RemoteException;
+    String deleteUsers() throws RemoteException;
 
     @WebMethod
-    void updateUser(int uid, int newuid, int fid) throws RemoteException;
+    String updateUser(int uid, int newuid, int fid) throws RemoteException;
 
     @WebMethod
-    int[] getUser(int uid) throws RemoteException;
+    ArrayList<String[]> getUser(int uid) throws RemoteException;
 
     @WebMethod
-    ArrayList<int[]> getUsers() throws RemoteException;
+    ArrayList<String[]> getUsers() throws RemoteException;
 
     @WebMethod
-    void createItem(int id, String name, int typeID) throws RemoteException;
+    String createItem(int id, String name, int typeID) throws RemoteException;
 
     @WebMethod
-    void deleteItem(int itemid) throws RemoteException;
+    String deleteItem(int itemid) throws RemoteException;
 
     @WebMethod
-    void deleteItems() throws RemoteException;
+    String deleteItems() throws RemoteException;
 
     @WebMethod
-    void updateItem(int itemid, String itemName, int typeid, int newitemid) throws RemoteException;
+    String updateItem(int itemid, String itemName, int typeid, int newitemid) throws RemoteException;
 
     @WebMethod
-    String[] getItem(int itemID) throws RemoteException;
+    ArrayList<String[]> getItem(int itemID) throws RemoteException;
 
     @WebMethod
     ArrayList<String[]> getItems() throws RemoteException;
 
     @WebMethod
-    boolean createType(int typeID, String name, int keep) throws RemoteException;
+    String createType(int typeID, String name, int keep) throws RemoteException;
 
     @WebMethod
-    boolean deleteType(int typeID) throws RemoteException;
+    String deleteType(int typeID) throws RemoteException;
 
     @WebMethod
-    void deleteTypes() throws RemoteException;
+    String deleteTypes() throws RemoteException;
 
     @WebMethod
-    void updateType(int typeID, String typeName, int keep, int newTypeID) throws RemoteException;
+    String updateType(int typeID, String typeName, int keep, int newTypeID) throws RemoteException;
 
     @WebMethod
-    String[] getType(int typeID) throws RemoteException;
+    ArrayList<String[]> getType(int typeID) throws RemoteException;
 
     @WebMethod
     ArrayList<String[]> getTypes() throws RemoteException;
 
     @WebMethod
-    ArrayList<Item> getFridgeContents(int fid) throws RemoteException, SQLException;
+    ArrayList<String[]> getFridgeContents(int fid) throws RemoteException, SQLException;
 
     @WebMethod
-    String[] getFridgeItem(int fid, int itemid) throws  RemoteException;
+    ArrayList<String[]> getFridgeItem(int fid, int itemid) throws  RemoteException;
 
     @WebMethod
     ArrayList<String[]> getFridge(int fid) throws RemoteException;
@@ -80,13 +78,13 @@ public interface SkeletonSOAP {
     ArrayList<String[]> getAllFridgeRows() throws  RemoteException;
 
     @WebMethod
-    void createFridgeRow(int fid, int itemid, Date expiration, int amount) throws RemoteException;
+    String createFridgeRow(int fid, int itemid, Date expiration, int amount) throws RemoteException;
 
     @WebMethod
-    void updateFridgeRow(int fid, int itemid, int newFid, int newItemid, Date newExpiration, int newAmount ) throws RemoteException;
+    String updateFridgeRow(int fid, int itemid, int newFid, int newItemid, Date newExpiration, int newAmount ) throws RemoteException;
 
     @WebMethod
-    void deleteFridgeRow(int fid, int itemid) throws RemoteException;
+    String deleteFridgeRow(int fid, int itemid) throws RemoteException;
 
     @WebMethod
     ArrayList<String[]> getTables() throws RemoteException;

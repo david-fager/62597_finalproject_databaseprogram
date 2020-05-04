@@ -2,7 +2,6 @@ package DB.SOAP;
 
 import Common.RMI.SkeletonRMI;
 import Common.SOAP.SkeletonSOAP;
-import DB.Item;
 
 import javax.jws.WebService;
 import java.rmi.RemoteException;
@@ -22,57 +21,57 @@ public class DB_SOAP implements SkeletonSOAP {
 
 
     @Override
-    public void createUser(int uid) throws RemoteException {
-        rmi.createUser(uid);
+    public String createUser(int uid) throws RemoteException {
+        return rmi.createUser(uid);
     }
 
     @Override
-    public void deleteUser(int uid) throws RemoteException {
-        rmi.deleteUser(uid);
+    public String deleteUser(int uid) throws RemoteException {
+        return rmi.deleteUser(uid);
     }
 
     @Override
-    public void deleteUsers() throws RemoteException {
-        rmi.deleteUsers();
+    public String deleteUsers() throws RemoteException {
+        return rmi.deleteUsers();
     }
 
     @Override
-    public void updateUser(int uid, int newuid, int fid) throws RemoteException {
-        rmi.updateUser(uid, newuid, fid);
+    public String updateUser(int uid, int newuid, int fid) throws RemoteException {
+        return rmi.updateUser(uid, newuid, fid);
     }
 
     @Override
-    public int[] getUser(int uid) throws RemoteException {
+    public ArrayList<String[]> getUser(int uid) throws RemoteException {
         return rmi.getUser(uid);
     }
 
     @Override
-    public ArrayList<int[]> getUsers() throws RemoteException {
+    public ArrayList<String[]> getUsers() throws RemoteException {
         return rmi.getUsers();
     }
 
     @Override
-    public void createItem(int id, String name, int typeID) throws RemoteException {
-        rmi.createItem(id, name, typeID);
+    public String createItem(int id, String name, int typeID) throws RemoteException {
+        return rmi.createItem(id, name, typeID);
     }
 
     @Override
-    public void deleteItem(int itemid) throws RemoteException {
-        rmi.deleteItem(itemid);
+    public String deleteItem(int itemid) throws RemoteException {
+        return rmi.deleteItem(itemid);
     }
 
     @Override
-    public void deleteItems() throws RemoteException {
-        rmi.deleteItems();
+    public String deleteItems() throws RemoteException {
+        return rmi.deleteItems();
     }
 
     @Override
-    public void updateItem(int itemid, String itemName, int typeid, int newitemid) throws RemoteException {
-        rmi.updateItem(itemid, itemName, typeid, newitemid);
+    public String updateItem(int itemid, String itemName, int typeid, int newitemid) throws RemoteException {
+        return rmi.updateItem(itemid, itemName, typeid, newitemid);
     }
 
     @Override
-    public String[] getItem(int itemID) throws RemoteException {
+    public ArrayList<String[]> getItem(int itemID) throws RemoteException {
         return rmi.getItem(itemID);
     }
 
@@ -82,27 +81,27 @@ public class DB_SOAP implements SkeletonSOAP {
     }
 
     @Override
-    public boolean createType(int typeID, String name, int keep) throws RemoteException {
+    public String createType(int typeID, String name, int keep) throws RemoteException {
         return rmi.createType(typeID, name, keep);
     }
 
     @Override
-    public boolean deleteType(int typeID) throws RemoteException {
+    public String deleteType(int typeID) throws RemoteException {
         return rmi.deleteType(typeID);
     }
 
     @Override
-    public void deleteTypes() throws RemoteException {
-        rmi.deleteTypes();
+    public String deleteTypes() throws RemoteException {
+        return rmi.deleteTypes();
     }
 
     @Override
-    public void updateType(int typeID, String typeName, int keep, int newTypeID) throws RemoteException {
-        rmi.updateType(typeID, typeName, keep, newTypeID);
+    public String updateType(int typeID, String typeName, int keep, int newTypeID) throws RemoteException {
+        return rmi.updateType(typeID, typeName, keep, newTypeID);
     }
 
     @Override
-    public String[] getType(int typeID) throws RemoteException {
+    public ArrayList<String[]> getType(int typeID) throws RemoteException {
         return rmi.getType(typeID);
     }
 
@@ -112,12 +111,12 @@ public class DB_SOAP implements SkeletonSOAP {
     }
 
     @Override
-    public ArrayList<Item> getFridgeContents(int fid) throws RemoteException, SQLException {
+    public ArrayList<String[]> getFridgeContents(int fid) throws RemoteException, SQLException {
         return rmi.getFridgeContents(fid);
     }
 
     @Override
-    public String[] getFridgeItem(int fid, int itemid) throws RemoteException {
+    public ArrayList<String[]> getFridgeItem(int fid, int itemid) throws RemoteException {
         return rmi.getFridgeItem(fid, itemid);
     }
 
@@ -132,23 +131,22 @@ public class DB_SOAP implements SkeletonSOAP {
     }
 
     @Override
-    public void createFridgeRow(int fid, int itemid, Date expiration, int amount) throws RemoteException {
-        rmi.createFridgeRow(fid, itemid,expiration,amount);
+    public String createFridgeRow(int fid, int itemid, Date expiration, int amount) throws RemoteException {
+        return rmi.createFridgeRow(fid, itemid,expiration,amount);
     }
 
     @Override
-    public void updateFridgeRow(int fid, int itemid, int newFid, int newItemid, Date newExpiration, int newAmount) throws RemoteException {
-        rmi.updateFridgeRow(fid, itemid, newFid, newItemid, newExpiration, newAmount);
+    public String updateFridgeRow(int fid, int itemid, int newFid, int newItemid, Date newExpiration, int newAmount) throws RemoteException {
+        return rmi.updateFridgeRow(fid, itemid, newFid, newItemid, newExpiration, newAmount);
     }
 
     @Override
-    public void deleteFridgeRow(int fid, int itemid) throws RemoteException {
-        rmi.deleteFridgeRow(fid, itemid);
+    public String deleteFridgeRow(int fid, int itemid) throws RemoteException {
+        return rmi.deleteFridgeRow(fid, itemid);
     }
 
     @Override
     public ArrayList<String[]> getTables() throws RemoteException {
         return rmi.getTables();
     }
-
 }
