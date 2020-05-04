@@ -125,7 +125,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
     //User
 //Creates a user and assigns a him a fridgeID
     @Override
-    public String createUser(int uid) {
+    public boolean createUser(int uid) {
         String sql = "INSERT INTO User("+ Qusername + ", " + QfridgeID + ") VALUES(?,?)";
         int i = 0;
         try (Connection conn = this.connectDB()) {
@@ -137,17 +137,13 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        if(i < 0 ){
-            return "Succesfully created User";
-        } else {
-            return "Error in trying to create User";
-        }
+        return i > 0;
 
     }
 
     //Deletes a user by its userID
     @Override
-    public String deleteUser(int uid) {
+    public boolean deleteUser(int uid) {
         String sql = "DELETE FROM User WHERE " + Qusername + "=?";
         int i = 0;
         try (Connection conn = this.connectDB()) {
@@ -159,16 +155,12 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        if(i < 0 ){
-            return "Succesfully deleted User";
-        } else {
-            return "Error in trying to delete User";
-        }
+        return i > 0;
 
     }
 
     @Override
-    public String deleteUsers() {
+    public boolean deleteUsers() {
         String sql = "DELETE FROM User ";
         int i = 0;
         try (Connection conn = this.connectDB()) {
@@ -179,17 +171,13 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
             System.out.println(e.getMessage());
         }
 
-        if(i < 0 ){
-            return "Succesfully deleted Users";
-        } else {
-            return "Error in trying to delete Users";
-        }
+        return i > 0;
     }
 
 
     //Update userID and fridgeID of user with userID = uid
     @Override
-    public String updateUser(int uid, int newuid, int fid) {
+    public boolean updateUser(int uid, int newuid, int fid) {
         String sql = "UPDATE User SET "+ Qusername +"=?, "+ QfridgeID+"=? WHERE "+Qusername+"=?";
         int i = 0;
         try (Connection conn = this.connectDB()) {
@@ -204,11 +192,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
             System.out.println(e.getMessage());
         }
 
-        if(i < 0 ){
-            return "Succesfully updated User";
-        } else {
-            return "Error in trying to update User";
-        }
+        return i > 0;
     }
 
     //Returns an int array containing userid and fridgeid
@@ -264,7 +248,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
     //FoodItems
     //Create a food item with itemID = id, Name = name and TypeID = typeID
     @Override
-    public String createItem(int id, String name, int typeid) {
+    public boolean createItem(int id, String name, int typeid) {
         String sql = "INSERT INTO Item("+QitemID+", "+ QitemName +", "+QtypeID+") VALUES(?,?,?)";
         int i = 0;
         try (Connection conn = this.connectDB()) {
@@ -277,17 +261,13 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        if(i < 0 ){
-            return "Succesfully created Item";
-        } else {
-            return "Error in trying to create Item";
-        }
+        return i > 0;
 
     }
 
     //Remove an item with ItemID = itemid
     @Override
-    public String deleteItem(int itemid) {
+    public boolean deleteItem(int itemid) {
         String sql = "DELETE FROM Item WHERE "+QitemID+"=?";
         int i = 0;
         try (Connection conn = this.connectDB()) {
@@ -300,15 +280,11 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
             System.out.println(e.getMessage());
         }
 
-        if(i < 0 ){
-            return "Succesfully deleted Item";
-        } else {
-            return "Error in trying to deleted Item";
-        }
+        return i > 0;
     }
 
     @Override
-    public String deleteItems() {
+    public boolean deleteItems() {
         String sql = "DELETE FROM Item";
         int i = 0;
         try (Connection conn = this.connectDB()) {
@@ -317,17 +293,13 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        if(i < 0 ){
-            return "Succesfully deleted Items";
-        } else {
-            return "Error in trying to deleted Items";
-        }
+        return i > 0;
 
     }
 
     //Update a fooditem by itemID
     @Override
-    public String updateItem(int itemid, String itemName, int typeid, int newitemid) {
+    public boolean updateItem(int itemid, String itemName, int typeid, int newitemid) {
         String sql = "UPDATE ITEM SET "+QitemID+"=?, "+itemName+"=?, "+QtypeID+"=? WHERE "+QitemID+"=?";
         int i = 0;
         try (Connection conn = this.connectDB()) {
@@ -343,11 +315,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
             System.out.println(e.getMessage());
         }
 
-        if(i < 0 ){
-            return "Succesfully updated Items";
-        } else {
-            return "Error in trying to updated Items";
-        }
+        return i > 0;
     }
 
     //Returns a string array with info about the item
@@ -404,7 +372,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
 
     //Foodtype
     @Override
-    public String createType(int typeid, String name, int keep) {
+    public boolean createType(int typeid, String name, int keep) {
         String sql = "INSERT INTO Type("+QtypeID+", "+ QtypeName +", "+Qkeep+") VALUES(?,?,?) ";
         int i = 0;
 
@@ -417,16 +385,12 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        if(i < 0 ){
-            return "Succesfully created Type";
-        } else {
-            return "Error in trying to created Type";
-        }
+        return i < 0;
 
     }
 
     @Override
-    public String deleteType(int typeid) {
+    public boolean deleteType(int typeid) {
         String sql = "DELETE FROM Type WHERE "+QtypeID+"=?";
         int i = 0;
 
@@ -439,16 +403,12 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+        return i > 0;
 
-        if(i < 0 ){
-            return "Succesfully deleted Type";
-        } else {
-            return "Error in trying to deleted Type";
-        }
     }
 
     @Override
-    public String deleteTypes() {
+    public boolean deleteTypes() {
         String sql = "DELETE FROM Type";
         int i = 0;
         try (Connection conn = this.connectDB()) {
@@ -458,15 +418,11 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        if(i < 0 ){
-            return "Succesfully deleted Types";
-        } else {
-            return "Error in trying to deleted Types";
-        }
+        return i > 0;
     }
 
     @Override
-    public String updateType(int typeid, String typeName, int keep, int newTypeid) {
+    public boolean updateType(int typeid, String typeName, int keep, int newTypeid) {
         String sql = "UPDATE Type SET "+QtypeID+"=?, "+QtypeName+"=?, "+Qkeep+"=? WHERE "+QtypeID+"=?";
         int i = 0;
         try (Connection conn = this.connectDB()) {
@@ -481,11 +437,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        if(i < 0 ){
-            return "Succesfully updated Type";
-        } else {
-            return "Error in trying to updated Type";
-        }
+        return i > 0;
     }
 
     //Returns string array containing info aobut type
@@ -654,7 +606,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
     }
 
     @Override
-    public String createFridgeRow(int fid, int itemid, Date expiration, int amount) throws RemoteException {
+    public boolean createFridgeRow(int fid, int itemid, Date expiration, int amount) throws RemoteException {
         String sql = "INSERT INTO Fridge("+QfridgeID+", "+QitemID+", "+Qexp+", "+Qamount+") VALUES(?,?,?,?)";
         int i = 0;
         try (Connection conn = this.connectDB()) {
@@ -667,15 +619,11 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        if(i < 0 ){
-            return "Succesfully created FridgeRow";
-        } else {
-            return "Error in trying to created FridgeRow";
-        }
+        return i > 0;
     }
 
     @Override
-    public String updateFridgeRow(int fid, int itemid, int newFid, int newItemid, Date newExpiration, int newAmount) throws RemoteException {
+    public boolean updateFridgeRow(int fid, int itemid, int newFid, int newItemid, Date newExpiration, int newAmount) throws RemoteException {
         String sql = "UPDATE Fridge SET "+QfridgeID+"=?, "+QitemID+"=?, "+Qexp+"=?, "+Qamount+"=? WHERE "+QfridgeID+"=? AND "+QitemID+"=?";
         int i = 0;
         try (Connection conn = this.connectDB()) {
@@ -692,15 +640,11 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        if(i < 0 ){
-            return "Succesfully updated FridgeRow";
-        } else {
-            return "Error in trying to updated FridgeRow";
-        }
+        return i > 0;
     }
 
     @Override
-    public String deleteFridgeRow(int fid, int itemid) {
+    public boolean deleteFridgeRow(int fid, int itemid) {
         String sql = "DELETE FROM Fridge WHERE "+QfridgeID+"=? AND "+QitemID+"=?";
         int i = 0;
         try (Connection conn = this.connectDB()) {
@@ -711,11 +655,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        if(i < 0 ){
-            return "Succesfully deleted FridgeRow";
-        } else {
-            return "Error in trying to deleted FridgeRow";
-        }
+        return i > 0;
     }
 
     @Override
@@ -742,5 +682,42 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
             System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in getTables(): " + e.getMessage());
             return new ArrayList<>();
         }
+    }
+
+    @Override
+    public ArrayList<String[]> getEverything(String username) throws RemoteException, SQLException {
+        ArrayList<String[]> items = new ArrayList<>();
+        String[] header = {"UserName", "FridgeID", "Amount", "ItemID", "Expiration", "ItemName", "TypeID", "TypeName", "Keep"};
+        items.add(header);
+        String sql = "SELECT UserName, User."+QfridgeID+", "+Qamount+", Fridge."+QitemID+", "+Qexp+", "+QitemName+", Item."+QtypeID+", "+QtypeName+", "+Qkeep+"  " +
+                "FROM User JOIN Fridge ON User."+QfridgeID+" = Fridge."+QfridgeID+" JOIN Item ON Fridge."+QitemID+" = Item."+QitemID+" " +
+                "JOIN Type ON Item."+QtypeID+" = Type."+QtypeID+" WHERE QuserName = ? \n";
+        ResultSet rset = null;
+
+        try (Connection conn = this.connectDB()) {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+
+            pstmt.setString(1, username);
+            rset = pstmt.executeQuery();
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        while (rset.next()) {
+            String[] item = new String[9];
+            item[0] = rset.getString("UserName");
+            item[1] = Integer.toString(rset.getInt("FridgeID"));
+            item[2] = Integer.toString(rset.getInt("Amount"));
+            item[3] = Integer.toString(rset.getInt("ItemID"));
+            item[4] = rset.getString("Expiration");
+            item[5] = rset.getString("ItemName");
+            item[6] = Integer.toString(rset.getInt("TypeID"));
+            item[7] = rset.getString("TypeName");
+            item[8] = Integer.toString(rset.getInt("Keep"));
+
+            items.add(item);
+        }
+        return items;
     }
 }

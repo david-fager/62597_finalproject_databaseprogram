@@ -12,16 +12,16 @@ import javax.jws.WebService;
 public interface SkeletonSOAP {
 
     @WebMethod
-    String createUser(int uid) throws RemoteException;
+    boolean createUser(int uid) throws RemoteException;
 
     @WebMethod
-    String deleteUser(int uid) throws RemoteException;
+    boolean deleteUser(int uid) throws RemoteException;
 
     @WebMethod
-    String deleteUsers() throws RemoteException;
+    boolean deleteUsers() throws RemoteException;
 
     @WebMethod
-    String updateUser(int uid, int newuid, int fid) throws RemoteException;
+    boolean updateUser(int uid, int newuid, int fid) throws RemoteException;
 
     @WebMethod
     ArrayList<String[]> getUser(int uid) throws RemoteException;
@@ -30,16 +30,16 @@ public interface SkeletonSOAP {
     ArrayList<String[]> getUsers() throws RemoteException;
 
     @WebMethod
-    String createItem(int id, String name, int typeID) throws RemoteException;
+    boolean createItem(int id, String name, int typeID) throws RemoteException;
 
     @WebMethod
-    String deleteItem(int itemid) throws RemoteException;
+    boolean deleteItem(int itemid) throws RemoteException;
 
     @WebMethod
-    String deleteItems() throws RemoteException;
+    boolean deleteItems() throws RemoteException;
 
     @WebMethod
-    String updateItem(int itemid, String itemName, int typeid, int newitemid) throws RemoteException;
+    boolean updateItem(int itemid, String itemName, int typeid, int newitemid) throws RemoteException;
 
     @WebMethod
     ArrayList<String[]> getItem(int itemID) throws RemoteException;
@@ -48,16 +48,16 @@ public interface SkeletonSOAP {
     ArrayList<String[]> getItems() throws RemoteException;
 
     @WebMethod
-    String createType(int typeID, String name, int keep) throws RemoteException;
+    boolean createType(int typeID, String name, int keep) throws RemoteException;
 
     @WebMethod
-    String deleteType(int typeID) throws RemoteException;
+    boolean deleteType(int typeID) throws RemoteException;
 
     @WebMethod
-    String deleteTypes() throws RemoteException;
+    boolean deleteTypes() throws RemoteException;
 
     @WebMethod
-    String updateType(int typeID, String typeName, int keep, int newTypeID) throws RemoteException;
+    boolean updateType(int typeID, String typeName, int keep, int newTypeID) throws RemoteException;
 
     @WebMethod
     ArrayList<String[]> getType(int typeID) throws RemoteException;
@@ -78,16 +78,19 @@ public interface SkeletonSOAP {
     ArrayList<String[]> getAllFridgeRows() throws  RemoteException;
 
     @WebMethod
-    String createFridgeRow(int fid, int itemid, Date expiration, int amount) throws RemoteException;
+    boolean createFridgeRow(int fid, int itemid, Date expiration, int amount) throws RemoteException;
 
     @WebMethod
-    String updateFridgeRow(int fid, int itemid, int newFid, int newItemid, Date newExpiration, int newAmount ) throws RemoteException;
+    boolean updateFridgeRow(int fid, int itemid, int newFid, int newItemid, Date newExpiration, int newAmount ) throws RemoteException;
 
     @WebMethod
-    String deleteFridgeRow(int fid, int itemid) throws RemoteException;
+    boolean deleteFridgeRow(int fid, int itemid) throws RemoteException;
 
     @WebMethod
     ArrayList<String[]> getTables() throws RemoteException;
+
+    @WebMethod
+    ArrayList<String[]> getEverything(String username) throws RemoteException;
 
 }
 
