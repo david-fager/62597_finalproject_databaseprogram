@@ -125,13 +125,13 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
     //User
 //Creates a user and assigns a him a fridgeID
     @Override
-    public boolean createUser(int uid) {
+    public boolean createUser(String userName) {
         String sql = "INSERT INTO User("+ Qusername + ", " + QfridgeID + ") VALUES(?,?)";
         int i = 0;
         try (Connection conn = this.connectDB()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
-            pstmt.setInt(1, createUserID());
+            pstmt.setString(1, userName);
             pstmt.setInt(2, createFridgeID());
             i = pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -143,13 +143,13 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
 
     //Deletes a user by its userID
     @Override
-    public boolean deleteUser(int uid) {
+    public boolean deleteUser(String userName) {
         String sql = "DELETE FROM User WHERE " + Qusername + "=?";
         int i = 0;
         try (Connection conn = this.connectDB()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
-            pstmt.setInt(1, uid);
+            pstmt.setString(1, userName);
 
             i = pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -177,15 +177,15 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
 
     //Update userID and fridgeID of user with userID = uid
     @Override
-    public boolean updateUser(int uid, int newuid, int fid) {
+    public boolean updateUser(String newUserName, int fid, String userName) {
         String sql = "UPDATE User SET "+ Qusername +"=?, "+ QfridgeID+"=? WHERE "+Qusername+"=?";
         int i = 0;
         try (Connection conn = this.connectDB()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
-            pstmt.setInt(1, newuid);
+            pstmt.setString(1, newUserName);
             pstmt.setInt(2, fid);
-            pstmt.setInt(3, uid);
+            pstmt.setString(3, userName);
             i =pstmt.executeUpdate();
 
         } catch (SQLException e) {
@@ -197,7 +197,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
 
     //Returns an int array containing userid and fridgeid
     @Override
-    public ArrayList<String[]> getUser(int uid) {
+    public ArrayList<String[]> getUser(String userName) {
         String sql = "SELECT * FROM User WHERE "+Qusername+"=?";
         ResultSet rset = null;
         String[] userInfo = new String[2];
@@ -207,10 +207,10 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
         try (Connection conn = this.connectDB()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
-            pstmt.setInt(1, uid);
+            pstmt.setString(1, userName);
 
             rset = pstmt.executeQuery();
-            userInfo[0] = Integer.toString(rset.getInt("UserID"));
+            userInfo[0] = rset.getString("UserName");
             userInfo[1] = Integer.toString(rset.getInt("FridgeID"));
             users.add(userInfo);
         } catch (SQLException e) {
@@ -234,7 +234,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
 
             rset = pstmt.executeQuery();
             while (rset.next()) {
-                userInfo[0] = Integer.toString(rset.getInt("UserID"));
+                userInfo[0] = rset.getString("UserName");
                 userInfo[1] = Integer.toString(rset.getInt("FridgeID"));
                 users.add(userInfo);
             }

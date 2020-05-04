@@ -7,15 +7,17 @@ import java.util.Date;
 @SuppressWarnings("NonAsciiCharacters")
 public interface SkeletonRMI extends java.rmi.Remote {
 
-    boolean createUser(int uid) throws java.rmi.RemoteException;
+    boolean createUser(String userName) throws java.rmi.RemoteException;
 
-    boolean deleteUser(int uid) throws java.rmi.RemoteException;
+    //Deletes a user by its userID
+    boolean deleteUser(String userName) throws java.rmi.RemoteException;
 
     boolean deleteUsers() throws java.rmi.RemoteException;
 
-    boolean updateUser(int uid, int newuid, int fid) throws java.rmi.RemoteException;
+    boolean updateUser(String newUserName, int fid, String userName) throws java.rmi.RemoteException;
 
-    ArrayList<String[]> getUser(int uid) throws java.rmi.RemoteException;
+    //Returns an int array containing userid and fridgeid
+    ArrayList<String[]> getUser(String userName) throws java.rmi.RemoteException;
 
     ArrayList<String[]> getUsers() throws java.rmi.RemoteException;
 
