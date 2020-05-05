@@ -8,7 +8,6 @@ public interface SkeletonRMI extends java.rmi.Remote {
 
     ArrayList<String[]> getTables() throws java.rmi.RemoteException;
 
-
     String adminLogin(String username, String password) throws java.rmi.RemoteException;
 
 

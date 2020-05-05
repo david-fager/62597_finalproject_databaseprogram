@@ -1,9 +1,13 @@
 package DB.SOAP;
 
-import Common.RMI.SkeletonRMI;
 import Common.SOAP.SkeletonSOAP;
+import DB.*;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.xml.internal.ws.developer.JAXWSProperties;
 
+import javax.annotation.Resource;
 import javax.jws.WebService;
+import javax.xml.ws.WebServiceContext;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -12,141 +16,152 @@ import java.util.ArrayList;
 @WebService(endpointInterface = "Common.SOAP.SkeletonSOAP")
 public class DB_SOAP implements SkeletonSOAP {
 
-    private SkeletonRMI rmi;
+    private HelperSingleton hs = HelperSingleton.getInstance();
 
-    public DB_SOAP(SkeletonRMI rmi){
-        this.rmi = rmi;
+    private UserMethods um;
+    private FridgeMethods fm;
+    private ItemMethods im;
+    private TypeMethods tm;
+
+    public DB_SOAP(UserMethods um, FridgeMethods fm, ItemMethods im, TypeMethods tm) {
+        this.um = um;
+        this.fm = fm;
+        this.im = im;
+        this.tm = tm;
     }
 
+    @Resource
+    WebServiceContext context;
 
     @Override
     public ArrayList<String[]> getTables() throws RemoteException {
-        return rmi.getTables();
+        return hs.getTables();
     }
-
 
     @Override
     public String adminLogin(String username, String password) throws RemoteException {
-        return rmi.adminLogin(username, password);
+        HttpExchange exchange = (HttpExchange) context.getMessageContext().get(JAXWSProperties.HTTP_EXCHANGE);
+        System.out.println("[" + exchange.getRequestMethod() + "]");
+        return hs.adminLogin(username, password);
     }
 
 
     @Override
     public boolean createUser(String userName) throws RemoteException {
-        return rmi.createUser(userName);
+        return um.createUser(userName);
     }
 
     @Override
     public ArrayList<String[]> getUser(String userName) throws RemoteException {
-        return rmi.getUser(userName);
+        return um.getUser(userName);
     }
 
     @Override
     public ArrayList<String[]> getUsers() throws RemoteException {
-        return rmi.getUsers();
+        return um.getUsers();
     }
 
     @Override
     public ArrayList<String[]> getCompleteUser(String username) throws RemoteException, SQLException {
-        return rmi.getCompleteUser(username);
+        return um.getCompleteUser(username);
     }
 
     @Override
     public boolean updateUser(String newUserName, int fid, String userName) throws RemoteException {
-        return rmi.updateUser(newUserName, fid, userName);
+        return um.updateUser(newUserName, fid, userName);
     }
 
     @Override
     public boolean deleteUser(String userName) throws RemoteException {
-        return rmi.deleteUser(userName);
+        return um.deleteUser(userName);
     }
 
 
     @Override
     public boolean createItem(String name, int typeID) throws RemoteException {
-        return rmi.createItem(name, typeID);
+        return im.createItem(name, typeID);
     }
 
     @Override
     public ArrayList<String[]> getItem(int itemID) throws RemoteException {
-        return rmi.getItem(itemID);
+        return im.getItem(itemID);
     }
 
     @Override
     public ArrayList<String[]> getItems() throws RemoteException {
-        return rmi.getItems();
+        return im.getItems();
     }
 
     @Override
     public boolean updateItem(int itemid, String itemName, int typeid, int newitemid) throws RemoteException {
-        return rmi.updateItem(itemid, itemName, typeid, newitemid);
+        return im.updateItem(itemid, itemName, typeid, newitemid);
     }
 
     @Override
     public boolean deleteItem(int itemid) throws RemoteException {
-        return rmi.deleteItem(itemid);
+        return im.deleteItem(itemid);
     }
 
 
     @Override
     public boolean createType(String name, int keep) throws RemoteException {
-        return rmi.createType(name, keep);
+        return tm.createType(name, keep);
     }
 
     @Override
     public ArrayList<String[]> getType(int typeID) throws RemoteException {
-        return rmi.getType(typeID);
+        return tm.getType(typeID);
     }
 
     @Override
     public ArrayList<String[]> getTypes() throws RemoteException {
-        return rmi.getTypes();
+        return tm.getTypes();
     }
 
     @Override
     public boolean updateType(int typeID, String typeName, int keep, int newTypeID) throws RemoteException {
-        return rmi.updateType(typeID, typeName, keep, newTypeID);
+        return tm.updateType(typeID, typeName, keep, newTypeID);
     }
 
     @Override
     public boolean deleteType(int typeID) throws RemoteException {
-        return rmi.deleteType(typeID);
+        return tm.deleteType(typeID);
     }
 
 
     @Override
     public boolean createFridgeRow(int fid, int itemid, String expiration, int amount) throws RemoteException {
-        return rmi.createFridgeRow(fid, itemid, expiration, amount);
+        return fm.createFridgeRow(fid, itemid, expiration, amount);
     }
 
     @Override
     public ArrayList<String[]> getFridgeItem(int fid, int itemid) throws RemoteException {
-        return rmi.getFridgeItem(fid, itemid);
+        return fm.getFridgeItem(fid, itemid);
     }
 
     @Override
     public ArrayList<String[]> getFridge(int fid) throws RemoteException{
-        return rmi.getFridge(fid);
+        return fm.getFridge(fid);
     }
 
     @Override
     public ArrayList<String[]> getAllFridgeRows() throws RemoteException {
-        return rmi.getAllFridgeRows();
+        return fm.getAllFridgeRows();
     }
 
     @Override
     public ArrayList<String[]> getFridgeContents(int fid) throws RemoteException, SQLException {
-        return rmi.getFridgeContents(fid);
+        return fm.getFridgeContents(fid);
     }
 
     @Override
     public boolean updateFridgeRow(int fid, int itemid, int newFid, int newItemid, String newExpiration, int newAmount) throws RemoteException {
-        return rmi.updateFridgeRow(fid, itemid, newFid, newItemid, newExpiration, newAmount);
+        return fm.updateFridgeRow(fid, itemid, newFid, newItemid, newExpiration, newAmount);
     }
 
     @Override
     public boolean deleteFridgeRow(int fid, int itemid) throws RemoteException {
-        return rmi.deleteFridgeRow(fid, itemid);
+        return fm.deleteFridgeRow(fid, itemid);
     }
 
 }

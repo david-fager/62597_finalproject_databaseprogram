@@ -1,5 +1,9 @@
+import DB.FridgeMethods;
+import DB.ItemMethods;
 import DB.RMI.DB_RMI;
 import DB.SOAP.DB_SOAP;
+import DB.TypeMethods;
+import DB.UserMethods;
 
 import javax.xml.ws.Endpoint;
 import java.net.MalformedURLException;
@@ -11,19 +15,30 @@ import java.util.Calendar;
 
 public class Run {
     private static DateFormat df = new SimpleDateFormat("[dd-MM-yyyy HH:mm:ss]");
+
     private static DB_SOAP soap;
     private static DB_RMI rmi;
+
+    private static UserMethods um;
+    private static FridgeMethods fm;
+    private static ItemMethods im;
+    private static TypeMethods tm;
 
     public static void main(String[] args) throws RemoteException, MalformedURLException {
         System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Starting server");
 
-        // SOAP for the javaprogram terminal client
+        um = new UserMethods();
+        fm = new FridgeMethods();
+        im = new ItemMethods();
+        tm = new TypeMethods();
+
+        // Preparing the RMI
         java.rmi.registry.LocateRegistry.createRegistry(9921);
-        rmi = new DB_RMI();
+        rmi = new DB_RMI(um, fm, im, tm);
         Naming.rebind("rmi://localhost:9921/my_fridge_rmi_remote", rmi);
 
-
-        soap = new DB_SOAP(rmi) ;
+        // Preparing the SOAP
+        soap = new DB_SOAP(um, fm, im, tm) ;
         Endpoint.publish("http://[::]:58008/my_fridge_soap_remote", soap);
 
         System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Server started");

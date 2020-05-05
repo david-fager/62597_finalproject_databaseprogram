@@ -13,7 +13,6 @@ public interface SkeletonSOAP {
     @WebMethod
     ArrayList<String[]> getTables() throws RemoteException;
 
-
     @WebMethod
     String adminLogin(String username, String password) throws RemoteException;
 
