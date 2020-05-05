@@ -85,22 +85,22 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
     }
     */
 
-    private int createFridgeID() {
-        String sql = "SELECT max(" + QfridgeID + ") FROM User";
+    private int getNextFreeID(String tableName, String columnName) {
+        String sql = "SELECT max(" + columnName + ") FROM " + tableName;
         ResultSet rset;
-        int fridgeID = 0;
+        int nextFreeID = 0;
 
         try (Connection conn = connectDB()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             rset = pstmt.executeQuery();
 
-            fridgeID = rset.getInt("max(" + QfridgeID + ")") + 1;
+            nextFreeID = rset.getInt("max(" + columnName + ")") + 1;
         } catch (SQLException e) {
-            System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in createFridgeID(): " + e.getMessage());
+            System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in getNextFreeID(): " + e.getMessage());
         }
 
-        return fridgeID;
+        return nextFreeID;
     }
 
     //User
@@ -114,18 +114,18 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
 
             pstmt.setString(1, userName);
 
-            int fridgeID = createFridgeID();
-            if (fridgeID < 1) {
-                System.out.println("this should not happen (createUser())");
+            int nextFreeID = getNextFreeID("User", QfridgeID);
+            if (nextFreeID < 1) {
+                System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " ID out of bounds");
                 return false;
             }
 
-            pstmt.setInt(2, fridgeID);
+            pstmt.setInt(2, nextFreeID);
 
             int i = pstmt.executeUpdate();
 
             if (i > 0) {
-                System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Created new user {" + userName + ", " + fridgeID + "}");
+                System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Created new user {" + userName + ", " + nextFreeID + "}");
                 return true;
             }
         } catch (SQLException e) {
@@ -139,19 +139,21 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
     @Override
     public boolean deleteUser(String userName) {
         String sql = "DELETE FROM User WHERE " + Qusername + "=?";
-        int i = 0;
 
         try (Connection conn = connectDB()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             pstmt.setString(1, userName);
 
-            i = pstmt.executeUpdate();
+            if (pstmt.executeUpdate() > 0) {
+                System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Deleted user with username " + userName);
+                return true;
+            }
         } catch (SQLException e) {
             System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in deleteUser(): " + e.getMessage());
         }
 
-        return i > 0;
+        return false;
     }
 
     @Override
@@ -175,7 +177,6 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
     @Override
     public boolean updateUser(String userName, int fid, String newUserName) {
         String sql = "UPDATE User SET " + Qusername + "=?, " + QfridgeID + "=? WHERE " + Qusername + "=?";
-        int i = 0;
 
         try (Connection conn = connectDB()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -184,12 +185,15 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
             pstmt.setInt(2, fid);
             pstmt.setString(3, userName);
 
-            i = pstmt.executeUpdate();
+            if (pstmt.executeUpdate() > 0) {
+                System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Updated user with username " + userName + " to {" + newUserName + ", " + fid + "}");
+                return true;
+            }
         } catch (SQLException e) {
             System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in updateUser(): " + e.getMessage());
         }
 
-        return i > 0;
+        return false;
     }
 
     //Returns an int array containing userid and fridgeid
@@ -217,6 +221,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
             System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in getUser(): " + e.getMessage());
         }
 
+        System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Sending user with username " + userName);
         return users;
     }
 
@@ -244,48 +249,60 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
         } catch (SQLException e) {
             System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in getUsers(): " + e.getMessage());
         }
+
+        System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Sending all users");
         return users;
     }
 
     //FoodItems
     //Create a food item with itemID = id, Name = name and TypeID = typeID
     @Override
-    public boolean createItem(int id, String name, int typeid) {
+    public boolean createItem(String name, int typeid) {
         String sql = "INSERT INTO Item(" + QitemID + ", " + QitemName + ", " + QtypeID + ") VALUES(?,?,?)";
-        int i = 0;
 
         try (Connection conn = connectDB()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
-            pstmt.setInt(1, id);
+            int nextFreeID = getNextFreeID("Item", QitemID);
+            if (nextFreeID < 1) {
+                System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " ID out of bounds");
+                return false;
+            }
+
+            pstmt.setInt(1, nextFreeID);
             pstmt.setString(2, name);
             pstmt.setInt(3, typeid);
 
-            i = pstmt.executeUpdate();
+            if (pstmt.executeUpdate() > 0) {
+                System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Created new item {" + nextFreeID + ", " + name + ", " + typeid + "}");
+                return true;
+            }
         } catch (SQLException e) {
             System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in createItem(): " + e.getMessage());
         }
-        return i > 0;
 
+        return false;
     }
 
     //Remove an item with ItemID = itemid
     @Override
     public boolean deleteItem(int itemid) {
         String sql = "DELETE FROM Item WHERE " + QitemID + "=?";
-        int i = 0;
 
         try (Connection conn = connectDB()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             pstmt.setInt(1, itemid);
 
-            i = pstmt.executeUpdate();
+            if (pstmt.executeUpdate() > 0) {
+                System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Deleted item with ID " + itemid);
+                return true;
+            }
         } catch (SQLException e) {
             System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in deleteItem(): " + e.getMessage());
         }
 
-        return i > 0;
+        return false;
     }
 
     @Override
@@ -307,8 +324,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
     //Update a fooditem by itemID
     @Override
     public boolean updateItem(int itemid, String itemName, int typeid, int newitemid) {
-        String sql = "UPDATE ITEM SET " + QitemID + "=?, " + itemName + "=?, " + QtypeID + "=? WHERE " + QitemID + "=?";
-        int i = 0;
+        String sql = "UPDATE ITEM SET " + QitemID + "=?, " + QitemName + "=?, " + QtypeID + "=? WHERE " + QitemID + "=?";
 
         try (Connection conn = connectDB()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -318,12 +334,15 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
             pstmt.setInt(3, typeid);
             pstmt.setInt(4, itemid);
 
-            i = pstmt.executeUpdate();
+            if (pstmt.executeUpdate() > 0) {
+                System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Updated item with ID " + itemid + " to {" + newitemid + ", " + itemName + ", " + typeid + "}");
+                return true;
+            }
         } catch (SQLException e) {
             System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in updateItem(): " + e.getMessage());
         }
 
-        return i > 0;
+        return false;
     }
 
     //Returns a string array with info about the item
@@ -351,6 +370,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
             System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in getItem(): " + e.getMessage());
         }
 
+        System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Sending item with ID " + itemID);
         return item;
     }
 
@@ -378,46 +398,57 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
             System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in getItems(): " + e.getMessage());
         }
 
+        System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Sending all items");
         return items;
     }
 
     //Foodtype
     @Override
-    public boolean createType(int typeid, String name, int keep) {
+    public boolean createType(String name, int keep) {
         String sql = "INSERT INTO Type(" + QtypeID + ", " + QtypeName + ", " + Qkeep + ") VALUES(?,?,?) ";
-        int i = 0;
 
         try (Connection conn = connectDB()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
-            pstmt.setInt(1, typeid);
+            int nextFreeID = getNextFreeID("Type", QtypeID);
+            if (nextFreeID < 1) {
+                System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " ID out of bounds");
+                return false;
+            }
+
+            pstmt.setInt(1, nextFreeID);
             pstmt.setString(2, name);
             pstmt.setInt(3, keep);
 
-            i = pstmt.executeUpdate();
+            if (pstmt.executeUpdate() > 0) {
+                System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Created new type {" + nextFreeID + ", " + name + ", " + keep + "}");
+                return true;
+            }
         } catch (SQLException e) {
             System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in createType(): " + e.getMessage());
         }
 
-        return i < 0;
+        return false;
     }
 
     @Override
     public boolean deleteType(int typeid) {
         String sql = "DELETE FROM Type WHERE " + QtypeID + "=?";
-        int i = 0;
 
         try (Connection conn = connectDB()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             pstmt.setInt(1, typeid);
 
-            i = pstmt.executeUpdate();
+            if (pstmt.executeUpdate() > 0) {
+                System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Deleted type with ID " + typeid);
+                return true;
+            }
         } catch (SQLException e) {
             System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in deleteType(): " + e.getMessage());
         }
 
-        return i > 0;
+        return false;
     }
 
     @Override
@@ -438,7 +469,6 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
     @Override
     public boolean updateType(int typeid, String typeName, int keep, int newTypeid) {
         String sql = "UPDATE Type SET " + QtypeID + "=?, " + QtypeName + "=?, " + Qkeep + "=? WHERE " + QtypeID + "=?";
-        int i = 0;
 
         try (Connection conn = connectDB()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -448,12 +478,15 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
             pstmt.setInt(3, keep);
             pstmt.setInt(4, typeid);
 
-            i = pstmt.executeUpdate();
+            if (pstmt.executeUpdate() > 0) {
+                System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Updated type with ID " + typeid + " to {" + newTypeid + ", " + typeName + ", " + keep + "}");
+                return true;
+            }
         } catch (SQLException e) {
             System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in updateType: " + e.getMessage());
         }
 
-        return i > 0;
+        return false;
     }
 
     //Returns string array containing info aobut type
@@ -463,7 +496,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
         ResultSet rset;
         ArrayList<String[]> type = new ArrayList<>();
         String[] itemInfo = new String[3];
-        String[] header = {QtypeID, "Name", Qkeep};
+        String[] header = {QtypeID, QtypeName, Qkeep};
         type.add(header);
 
         try (Connection conn = connectDB()) {
@@ -474,13 +507,14 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
             rset = pstmt.executeQuery();
 
             itemInfo[0] = Integer.toString(rset.getInt(QtypeID));
-            itemInfo[1] = rset.getString("Name");
+            itemInfo[1] = rset.getString(QtypeName);
             itemInfo[2] = Integer.toString(rset.getInt(Qkeep));
             type.add(itemInfo);
         } catch (SQLException e) {
             System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in getType(): " + e.getMessage());
         }
 
+        System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Sending type with ID " + typeid);
         return type;
     }
 
@@ -489,7 +523,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
         String sql = "SELECT * FROM Type ";
         ResultSet rset;
         ArrayList<String[]> types = new ArrayList<>();
-        String[] header = {QtypeID, "Name", Qkeep};
+        String[] header = {QtypeID, QtypeName, Qkeep};
         types.add(header);
 
         try (Connection conn = connectDB()) {
@@ -500,7 +534,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
             while (rset.next()) {
                 String[] typeInfo = new String[3];
                 typeInfo[0] = Integer.toString(rset.getInt(QtypeID));
-                typeInfo[1] = rset.getString("Name");
+                typeInfo[1] = rset.getString(QtypeName);
                 typeInfo[2] = Integer.toString(rset.getInt(Qkeep));
                 types.add(typeInfo);
             }
@@ -508,6 +542,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
             System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in : getTypes()" + e.getMessage());
         }
 
+        System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Sending all types");
         return types;
     }
 
@@ -542,6 +577,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
             System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in getFridgeContents(): " + e.getMessage());
         }
 
+        System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Sending all info on fridge with ID " + fid);
         return items;
     }
 
@@ -569,6 +605,8 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
         } catch (SQLException e) {
             System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in getFridgeItem(): " + e.getMessage());
         }
+
+        System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Sending fridge item with fridgeID " + fid + " and itemID " + itemid);
         return fridgeItem;
     }
 
@@ -599,6 +637,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
             System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in getFridge: " + e.getMessage());
         }
 
+        System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Sending items in fridge with ID " + fid);
         return items;
     }
 
@@ -627,57 +666,61 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
             System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in getAllFridgeRows(): " + e.getMessage());
         }
 
+        System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Sending everything in the fridge table");
         return items;
     }
 
     @Override
-    public boolean createFridgeRow(int fid, int itemid, Date expiration, int amount) {
+    public boolean createFridgeRow(int fid, int itemid, String expiration, int amount) {
         String sql = "INSERT INTO Fridge(" + QfridgeID + ", " + QitemID + ", " + Qexp + ", " + Qamount + ") VALUES(?,?,?,?)";
-        int i = 0;
 
         try (Connection conn = connectDB()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             pstmt.setInt(1, fid);
             pstmt.setInt(2, itemid);
-            pstmt.setDate(3, (java.sql.Date) expiration);
+            pstmt.setString(3, expiration);
             pstmt.setInt(4, amount);
 
-            i = pstmt.executeUpdate();
+            if (pstmt.executeUpdate() > 0) {
+                System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Created new fridge item {" + fid + ", " + itemid + ", " + expiration + ", " + amount + "}");
+                return true;
+            }
         } catch (SQLException e) {
             System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in createFridgeRow(): " + e.getMessage());
         }
 
-        return i > 0;
+        return false;
     }
 
     @Override
-    public boolean updateFridgeRow(int fid, int itemid, int newFid, int newItemid, Date newExpiration, int newAmount) {
+    public boolean updateFridgeRow(int fid, int itemid, int newFid, int newItemid, String newExpiration, int newAmount) {
         String sql = "UPDATE Fridge SET " + QfridgeID + "=?, " + QitemID + "=?, " + Qexp + "=?, " + Qamount + "=? WHERE " + QfridgeID + "=? AND " + QitemID + "=?";
-        int i = 0;
 
         try (Connection conn = connectDB()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             pstmt.setInt(1, newFid);
             pstmt.setInt(2, newItemid);
-            pstmt.setDate(3, (java.sql.Date) newExpiration);
+            pstmt.setString(3, newExpiration);
             pstmt.setInt(4, newAmount);
             pstmt.setInt(5, fid);
             pstmt.setInt(6, itemid);
 
-            i = pstmt.executeUpdate();
+            if (pstmt.executeUpdate() > 0) {
+                System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Updated fridge item with fridgeID " + fid + " and itemID " + itemid + " to {" + newFid + ", " + newItemid + ", " + newExpiration + ", " + newAmount + "}");
+                return true;
+            }
         } catch (SQLException e) {
             System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in updateFridgeRow(): " + e.getMessage());
         }
 
-        return i > 0;
+        return false;
     }
 
     @Override
     public boolean deleteFridgeRow(int fid, int itemid) {
         String sql = "DELETE FROM Fridge WHERE " + QfridgeID + "=? AND " + QitemID + "=?";
-        int i = 0;
 
         try (Connection conn = connectDB()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -685,12 +728,15 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
             pstmt.setInt(1, fid);
             pstmt.setInt(2, itemid);
 
-            i = pstmt.executeUpdate();
+            if (pstmt.executeUpdate() > 0) {
+                System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Deleted fridge item with fridgeID " + fid + " and itemID " + itemid);
+                return true;
+            }
         } catch (SQLException e) {
             System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in deleteFridgeRow(): " + e.getMessage());
         }
 
-        return i > 0;
+        return false;
     }
 
     @Override
@@ -718,6 +764,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
             return new ArrayList<>();
         }
 
+        System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Sending info on all tables in the database");
         return tables;
     }
 
@@ -755,6 +802,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
             System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in getCompleteUser(): " + e.getMessage());
         }
 
+        System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Sending all information stored on the user with username " + username);
         return items;
     }
 }

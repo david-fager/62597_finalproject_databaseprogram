@@ -30,7 +30,7 @@ public interface SkeletonSOAP {
     ArrayList<String[]> getUsers() throws RemoteException;
 
     @WebMethod
-    boolean createItem(int id, String name, int typeID) throws RemoteException;
+    boolean createItem(String name, int typeID) throws RemoteException;
 
     @WebMethod
     boolean deleteItem(int itemid) throws RemoteException;
@@ -48,7 +48,7 @@ public interface SkeletonSOAP {
     ArrayList<String[]> getItems() throws RemoteException;
 
     @WebMethod
-    boolean createType(int typeID, String name, int keep) throws RemoteException;
+    boolean createType(String name, int keep) throws RemoteException;
 
     @WebMethod
     boolean deleteType(int typeID) throws RemoteException;
@@ -78,10 +78,10 @@ public interface SkeletonSOAP {
     ArrayList<String[]> getAllFridgeRows() throws  RemoteException;
 
     @WebMethod
-    boolean createFridgeRow(int fid, int itemid, Date expiration, int amount) throws RemoteException;
+    boolean createFridgeRow(int fid, int itemid, String expiration, int amount) throws RemoteException;
 
     @WebMethod
-    boolean updateFridgeRow(int fid, int itemid, int newFid, int newItemid, Date newExpiration, int newAmount ) throws RemoteException;
+    boolean updateFridgeRow(int fid, int itemid, int newFid, int newItemid, String newExpiration, int newAmount ) throws RemoteException;
 
     @WebMethod
     boolean deleteFridgeRow(int fid, int itemid) throws RemoteException;

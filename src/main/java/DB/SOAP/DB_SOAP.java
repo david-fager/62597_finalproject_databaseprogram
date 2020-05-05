@@ -51,8 +51,8 @@ public class DB_SOAP implements SkeletonSOAP {
     }
 
     @Override
-    public boolean createItem(int id, String name, int typeID) throws RemoteException {
-        return rmi.createItem(id, name, typeID);
+    public boolean createItem(String name, int typeID) throws RemoteException {
+        return rmi.createItem(name, typeID);
     }
 
     @Override
@@ -81,8 +81,8 @@ public class DB_SOAP implements SkeletonSOAP {
     }
 
     @Override
-    public boolean createType(int typeID, String name, int keep) throws RemoteException {
-        return rmi.createType(typeID, name, keep);
+    public boolean createType(String name, int keep) throws RemoteException {
+        return rmi.createType(name, keep);
     }
 
     @Override
@@ -131,12 +131,12 @@ public class DB_SOAP implements SkeletonSOAP {
     }
 
     @Override
-    public boolean createFridgeRow(int fid, int itemid, Date expiration, int amount) throws RemoteException {
-        return rmi.createFridgeRow(fid, itemid,expiration,amount);
+    public boolean createFridgeRow(int fid, int itemid, String expiration, int amount) throws RemoteException {
+        return rmi.createFridgeRow(fid, itemid, expiration, amount);
     }
 
     @Override
-    public boolean updateFridgeRow(int fid, int itemid, int newFid, int newItemid, Date newExpiration, int newAmount) throws RemoteException {
+    public boolean updateFridgeRow(int fid, int itemid, int newFid, int newItemid, String newExpiration, int newAmount) throws RemoteException {
         return rmi.updateFridgeRow(fid, itemid, newFid, newItemid, newExpiration, newAmount);
     }
 

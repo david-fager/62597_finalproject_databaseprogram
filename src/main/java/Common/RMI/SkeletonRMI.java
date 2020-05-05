@@ -21,7 +21,7 @@ public interface SkeletonRMI extends java.rmi.Remote {
 
     ArrayList<String[]> getUsers() throws java.rmi.RemoteException;
 
-    boolean createItem(int id, String name, int typeid) throws java.rmi.RemoteException;
+    boolean createItem(String name, int typeid) throws java.rmi.RemoteException;
 
     boolean deleteItem(int itemid) throws java.rmi.RemoteException;
 
@@ -33,7 +33,7 @@ public interface SkeletonRMI extends java.rmi.Remote {
 
     ArrayList<String[]> getItems() throws java.rmi.RemoteException;
 
-    boolean createType(int typeid, String name, int keep) throws java.rmi.RemoteException;
+    boolean createType(String name, int keep) throws java.rmi.RemoteException;
 
     boolean deleteType(int typeid) throws java.rmi.RemoteException;
 
@@ -53,9 +53,9 @@ public interface SkeletonRMI extends java.rmi.Remote {
 
     ArrayList<String[]> getAllFridgeRows() throws  java.rmi.RemoteException;
 
-    boolean createFridgeRow(int fid, int itemid, Date expiration, int amount) throws java.rmi.RemoteException;
+    boolean createFridgeRow(int fid, int itemid, String expiration, int amount) throws java.rmi.RemoteException;
 
-    boolean updateFridgeRow(int fid, int itemid, int newFid, int newItemid, Date newExpiration, int newAmount ) throws java.rmi.RemoteException;
+    boolean updateFridgeRow(int fid, int itemid, int newFid, int newItemid, String newExpiration, int newAmount ) throws java.rmi.RemoteException;
 
     boolean deleteFridgeRow(int fid, int itemid) throws java.rmi.RemoteException;
 
