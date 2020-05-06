@@ -8,6 +8,7 @@ import com.sun.xml.internal.ws.developer.JAXWSProperties;
 import javax.annotation.Resource;
 import javax.jws.WebService;
 import javax.xml.ws.WebServiceContext;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 @SuppressWarnings("/NonAsciiCharacters")
@@ -35,7 +36,10 @@ public class DB_SOAP implements SkeletonSOAP {
     WebServiceContext context;
 
     @Override
-    public ArrayList<String[]> getTables() {
+    public ArrayList<String[]> getTables(String uuid) throws RemoteException {
+        if (!hs.validateUUID(uuid)) {
+            throw new RemoteException();
+        }
         return hs.getTables();
     }
 
@@ -48,120 +52,189 @@ public class DB_SOAP implements SkeletonSOAP {
 
 
     @Override
-    public boolean createUser(String userName) {
+    public boolean createUser(String uuid, String userName) throws RemoteException {
+        if (!hs.validateUUID(uuid)) {
+            throw new RemoteException();
+        }
         return um.createUser(userName);
     }
 
     @Override
-    public ArrayList<String[]> getUser(String userName) {
+    public ArrayList<String[]> getUser(String uuid, String userName) throws RemoteException {
+        if (!hs.validateUUID(uuid)) {
+            throw new RemoteException();
+        }
         return um.getUser(userName);
     }
 
     @Override
-    public ArrayList<String[]> getUsers() {
+    public ArrayList<String[]> getUsers(String uuid) throws RemoteException {
+        if (!hs.validateUUID(uuid)) {
+            throw new RemoteException();
+        }
         return um.getUsers();
     }
 
     @Override
-    public ArrayList<String[]> getCompleteUser(String username) {
+    public ArrayList<String[]> getCompleteUser(String uuid, String username) throws RemoteException {
+        if (!hs.validateUUID(uuid)) {
+            throw new RemoteException();
+        }
         return um.getCompleteUser(username);
     }
 
     @Override
-    public boolean updateUser(String newUserName, int fid, String userName) {
+    public boolean updateUser(String uuid, String newUserName, int fid, String userName) throws RemoteException {
+        if (!hs.validateUUID(uuid)) {
+            throw new RemoteException();
+        }
         return um.updateUser(newUserName, fid, userName);
     }
 
     @Override
-    public boolean deleteUser(String userName) {
+    public boolean deleteUser(String uuid, String userName) throws RemoteException {
+        if (!hs.validateUUID(uuid)) {
+            throw new RemoteException();
+        }
         return um.deleteUser(userName);
     }
 
 
     @Override
-    public boolean createItem(String name, int typeID) {
+    public boolean createItem(String uuid, String name, int typeID) throws RemoteException {
+        if (!hs.validateUUID(uuid)) {
+            throw new RemoteException();
+        }
         return im.createItem(name, typeID);
     }
 
     @Override
-    public ArrayList<String[]> getItem(int itemID) {
+    public ArrayList<String[]> getItem(String uuid, int itemID) throws RemoteException {
+        if (!hs.validateUUID(uuid)) {
+            throw new RemoteException();
+        }
         return im.getItem(itemID);
     }
 
     @Override
-    public ArrayList<String[]> getItems() {
+    public ArrayList<String[]> getItems(String uuid) throws RemoteException {
+        if (!hs.validateUUID(uuid)) {
+            throw new RemoteException();
+        }
         return im.getItems();
     }
 
     @Override
-    public boolean updateItem(int itemid, String itemName, int typeid, int newitemid) {
+    public boolean updateItem(String uuid, int itemid, String itemName, int typeid, int newitemid) throws RemoteException {
+        if (!hs.validateUUID(uuid)) {
+            throw new RemoteException();
+        }
         return im.updateItem(itemid, itemName, typeid, newitemid);
     }
 
     @Override
-    public boolean deleteItem(int itemid) {
+    public boolean deleteItem(String uuid, int itemid) throws RemoteException {
+        if (!hs.validateUUID(uuid)) {
+            throw new RemoteException();
+        }
         return im.deleteItem(itemid);
     }
 
 
     @Override
-    public boolean createType(String name, int keep) {
+    public boolean createType(String uuid, String name, int keep) throws RemoteException {
+        if (!hs.validateUUID(uuid)) {
+            throw new RemoteException();
+        }
         return tm.createType(name, keep);
     }
 
     @Override
-    public ArrayList<String[]> getType(int typeID) {
+    public ArrayList<String[]> getType(String uuid, int typeID) throws RemoteException {
+        if (!hs.validateUUID(uuid)) {
+            throw new RemoteException();
+        }
         return tm.getType(typeID);
     }
 
     @Override
-    public ArrayList<String[]> getTypes() {
+    public ArrayList<String[]> getTypes(String uuid) throws RemoteException {
+        if (!hs.validateUUID(uuid)) {
+            throw new RemoteException();
+        }
         return tm.getTypes();
     }
 
     @Override
-    public boolean updateType(int typeID, String typeName, int keep, int newTypeID) {
+    public boolean updateType(String uuid, int typeID, String typeName, int keep, int newTypeID) throws RemoteException {
+        if (!hs.validateUUID(uuid)) {
+            throw new RemoteException();
+        }
         return tm.updateType(typeID, typeName, keep, newTypeID);
     }
 
     @Override
-    public boolean deleteType(int typeID) {
+    public boolean deleteType(String uuid, int typeID) throws RemoteException {
+        if (!hs.validateUUID(uuid)) {
+            throw new RemoteException();
+        }
         return tm.deleteType(typeID);
     }
 
 
     @Override
-    public boolean createFridgeRow(int fid, int itemid, String expiration, int amount) {
+    public boolean createFridgeRow(String uuid, int fid, int itemid, String expiration, int amount) throws RemoteException {
+        if (!hs.validateUUID(uuid)) {
+            throw new RemoteException();
+        }
         return fm.createFridgeRow(fid, itemid, expiration, amount);
     }
 
     @Override
-    public ArrayList<String[]> getFridgeItem(int fid, int itemid) {
+    public ArrayList<String[]> getFridgeItem(String uuid, int fid, int itemid) throws RemoteException {
+        if (!hs.validateUUID(uuid)) {
+            throw new RemoteException();
+        }
         return fm.getFridgeItem(fid, itemid);
     }
 
     @Override
-    public ArrayList<String[]> getFridge(int fid) {
+    public ArrayList<String[]> getFridge(String uuid, int fid) throws RemoteException {
+        if (!hs.validateUUID(uuid)) {
+            throw new RemoteException();
+        }
         return fm.getFridge(fid);
     }
 
     @Override
-    public ArrayList<String[]> getAllFridgeRows() {
+    public ArrayList<String[]> getAllFridgeRows(String uuid) throws RemoteException {
+        if (!hs.validateUUID(uuid)) {
+            throw new RemoteException();
+        }
         return fm.getAllFridgeRows();
     }
 
     @Override
-    public ArrayList<String[]> getFridgeContents(int fid) {
+    public ArrayList<String[]> getFridgeContents(String uuid, int fid) throws RemoteException {
+        if (!hs.validateUUID(uuid)) {
+            throw new RemoteException();
+        }
         return fm.getFridgeContents(fid);
     }
 
     @Override
-    public boolean updateFridgeRow(int fid, int itemid, int newFid, int newItemid, String newExpiration, int newAmount) {
+    public boolean updateFridgeRow(String uuid, int fid, int itemid, int newFid, int newItemid, String newExpiration, int newAmount) throws RemoteException {
+        if (!hs.validateUUID(uuid)) {
+            throw new RemoteException();
+        }
         return fm.updateFridgeRow(fid, itemid, newFid, newItemid, newExpiration, newAmount);
     }
 
     @Override
-    public boolean deleteFridgeRow(int fid, int itemid) {
+    public boolean deleteFridgeRow(String uuid, int fid, int itemid) throws RemoteException {
+        if (!hs.validateUUID(uuid)) {
+            throw new RemoteException();
+        }
         return fm.deleteFridgeRow(fid, itemid);
     }
 

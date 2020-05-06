@@ -40,7 +40,6 @@ public class HelperSingleton {
     }
     
     // Helper methods
-    
     public String getCurrentTime() {
         return df.format(Calendar.getInstance().getTimeInMillis());
     }
@@ -115,6 +114,11 @@ public class HelperSingleton {
         }
 
         return uuid;
+    }
+
+    public boolean validateUUID(String uuid) {
+        System.out.println(uuid);
+        return true;
     }
 
 }
