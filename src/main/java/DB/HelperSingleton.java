@@ -1,6 +1,5 @@
 package DB;
 
-import java.rmi.RemoteException;
 import java.sql.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -11,27 +10,27 @@ import java.util.UUID;
 
 public class HelperSingleton {
 
-    private static HelperSingleton helperSingleton = new HelperSingleton();
-    public static final DateFormat df = new SimpleDateFormat("[dd-MM-yyyy HH:mm:ss]");
-    public static HashMap<String, String> sessions = new HashMap<>();
+    private static final HelperSingleton helperSingleton = new HelperSingleton();
+    public final DateFormat df = new SimpleDateFormat("[dd-MM-yyyy HH:mm:ss]");
+    public HashMap<String, String> sessions = new HashMap<>();
 
     //Global names for sql Queries
     //User
-    public static final String Qusername = "UserName";
-    public static final String QfridgeID = "FridgeID";
+    public final String Qusername = "UserName";
+    public final String QfridgeID = "FridgeID";
 
     //Fridge
-    public static final String Qamount = "Amount";
-    public static final String QitemID = "ItemID";
-    public static final String Qexp = "Expiration";
+    public final String Qamount = "Amount";
+    public final String QitemID = "ItemID";
+    public final String Qexp = "Expiration";
 
     //Item
-    public static final String QitemName = "ItemName";
-    public static final String QtypeID = "TypeID";
+    public final String QitemName = "ItemName";
+    public final String QtypeID = "TypeID";
 
     //Type
-    public static final String QtypeName = "TypeName";
-    public static final String Qkeep = "Keep";
+    public final String QtypeName = "TypeName";
+    public final String Qkeep = "Keep";
 
     private HelperSingleton() {
     }
@@ -39,24 +38,29 @@ public class HelperSingleton {
     public static HelperSingleton getInstance() {
         return helperSingleton;
     }
-
+    
     // Helper methods
-    public static Connection connectDB() {
+    
+    public String getCurrentTime() {
+        return df.format(Calendar.getInstance().getTimeInMillis());
+    }
+    
+    public Connection connectDB() {
         String url = "jdbc:sqlite:src/main/resources/Fridge.db";
         Connection conn = null;
 
         try {
             conn = DriverManager.getConnection(url);
             if (conn != null) {
-                System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Connected to Fridge.db at: '" + url + "'");
+                System.out.println(getCurrentTime() + " Connected to Fridge.db at: '" + url + "'");
             }
         } catch (SQLException e) {
-            System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in connectDB(): " + e.getMessage());
+            System.out.println(getCurrentTime() + " Exception in connectDB(): " + e.getMessage());
         }
         return conn;
     }
 
-    public static int getNextFreeID(String tableName, String columnName) {
+    public int getNextFreeID(String tableName, String columnName) {
         String sql = "SELECT max(" + columnName + ") FROM " + tableName;
         ResultSet rset;
         int nextFreeID = 0;
@@ -68,13 +72,13 @@ public class HelperSingleton {
 
             nextFreeID = rset.getInt("max(" + columnName + ")") + 1;
         } catch (SQLException e) {
-            System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in getNextFreeID(): " + e.getMessage());
+            System.out.println(getCurrentTime() + " Exception in getNextFreeID(): " + e.getMessage());
         }
 
         return nextFreeID;
     }
 
-    public static ArrayList<String[]> getTables() {
+    public ArrayList<String[]> getTables() {
         String sql = "SELECT name, sql FROM sqlite_master";
         ResultSet rset;
         ArrayList<String[]> tables = new ArrayList<>();
@@ -82,7 +86,7 @@ public class HelperSingleton {
         tables.add(header);
 
         try (Connection conn = connectDB()) {
-            System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Performing query: '" + sql + "'");
+            System.out.println(getCurrentTime() + " Performing query: '" + sql + "'");
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             rset = pstmt.executeQuery();
@@ -94,15 +98,15 @@ public class HelperSingleton {
                 tables.add(tableColumns);
             }
         } catch (SQLException e) {
-            System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in getTables(): " + e.getMessage());
+            System.out.println(getCurrentTime() + " Exception in getTables(): " + e.getMessage());
             return new ArrayList<>();
         }
 
-        System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Sending info on all tables in the database");
+        System.out.println(getCurrentTime() + " Sending info on all tables in the database");
         return tables;
     }
 
-    public static String adminLogin(String username, String password) {
+    public String adminLogin(String username, String password) {
 
         String uuid = UUID.randomUUID().toString();
 

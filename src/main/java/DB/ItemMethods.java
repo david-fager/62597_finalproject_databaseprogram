@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class ItemMethods {
 
@@ -21,7 +20,7 @@ public class ItemMethods {
 
             int nextFreeID = hs.getNextFreeID("Item", hs.QitemID);
             if (nextFreeID < 1) {
-                System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " ID out of bounds");
+                System.out.println(hs.getCurrentTime() + " ID out of bounds");
                 return false;
             }
 
@@ -30,11 +29,11 @@ public class ItemMethods {
             pstmt.setInt(3, typeid);
 
             if (pstmt.executeUpdate() > 0) {
-                System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Created new item {" + nextFreeID + ", " + name + ", " + typeid + "}");
+                System.out.println(hs.getCurrentTime() + " Created new item {" + nextFreeID + ", " + name + ", " + typeid + "}");
                 return true;
             }
         } catch (SQLException e) {
-            System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in createItem(): " + e.getMessage());
+            System.out.println(hs.getCurrentTime() + " Exception in createItem(): " + e.getMessage());
         }
 
         return false;
@@ -61,10 +60,10 @@ public class ItemMethods {
             itemInfo[2] = Integer.toString(rset.getInt(hs.QtypeID));
             item.add(itemInfo);
         } catch (SQLException e) {
-            System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in getItem(): " + e.getMessage());
+            System.out.println(hs.getCurrentTime() + " Exception in getItem(): " + e.getMessage());
         }
 
-        System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Sending item with ID " + itemID);
+        System.out.println(hs.getCurrentTime() + " Sending item with ID " + itemID);
         return item;
     }
 
@@ -88,10 +87,10 @@ public class ItemMethods {
                 items.add(itemInfo);
             }
         } catch (SQLException e) {
-            System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in getItems(): " + e.getMessage());
+            System.out.println(hs.getCurrentTime() + " Exception in getItems(): " + e.getMessage());
         }
 
-        System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Sending all items");
+        System.out.println(hs.getCurrentTime() + " Sending all items");
         return items;
     }
 
@@ -108,11 +107,11 @@ public class ItemMethods {
             pstmt.setInt(4, itemid);
 
             if (pstmt.executeUpdate() > 0) {
-                System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Updated item with ID " + itemid + " to {" + newitemid + ", " + itemName + ", " + typeid + "}");
+                System.out.println(hs.getCurrentTime() + " Updated item with ID " + itemid + " to {" + newitemid + ", " + itemName + ", " + typeid + "}");
                 return true;
             }
         } catch (SQLException e) {
-            System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in updateItem(): " + e.getMessage());
+            System.out.println(hs.getCurrentTime() + " Exception in updateItem(): " + e.getMessage());
         }
 
         return false;
@@ -128,11 +127,11 @@ public class ItemMethods {
             pstmt.setInt(1, itemid);
 
             if (pstmt.executeUpdate() > 0) {
-                System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Deleted item with ID " + itemid);
+                System.out.println(hs.getCurrentTime() + " Deleted item with ID " + itemid);
                 return true;
             }
         } catch (SQLException e) {
-            System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in deleteItem(): " + e.getMessage());
+            System.out.println(hs.getCurrentTime() + " Exception in deleteItem(): " + e.getMessage());
         }
 
         return false;

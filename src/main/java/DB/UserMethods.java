@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class UserMethods {
 
@@ -23,7 +22,7 @@ public class UserMethods {
 
             int nextFreeID = hs.getNextFreeID("User", hs.QfridgeID);
             if (nextFreeID < 1) {
-                System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " ID out of bounds");
+                System.out.println(hs.getCurrentTime() + " ID out of bounds");
                 return false;
             }
 
@@ -32,11 +31,11 @@ public class UserMethods {
             int i = pstmt.executeUpdate();
 
             if (i > 0) {
-                System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Created new user {" + userName + ", " + nextFreeID + "}");
+                System.out.println(hs.getCurrentTime() + " Created new user {" + userName + ", " + nextFreeID + "}");
                 return true;
             }
         } catch (SQLException e) {
-            System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in createUser(): " + e.getMessage());
+            System.out.println(hs.getCurrentTime() + " Exception in createUser(): " + e.getMessage());
         }
 
         return false;
@@ -63,10 +62,10 @@ public class UserMethods {
             users.add(userInfo);
 
         } catch (SQLException e) {
-            System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in getUser(): " + e.getMessage());
+            System.out.println(hs.getCurrentTime() + " Exception in getUser(): " + e.getMessage());
         }
 
-        System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Sending user with username " + userName);
+        System.out.println(hs.getCurrentTime() + " Sending user with username " + userName);
         return users;
     }
 
@@ -91,10 +90,10 @@ public class UserMethods {
             }
 
         } catch (SQLException e) {
-            System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in getUsers(): " + e.getMessage());
+            System.out.println(hs.getCurrentTime() + " Exception in getUsers(): " + e.getMessage());
         }
 
-        System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Sending all users");
+        System.out.println(hs.getCurrentTime() + " Sending all users");
         return users;
     }
 
@@ -128,10 +127,10 @@ public class UserMethods {
                 items.add(item);
             }
         } catch (SQLException e) {
-            System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in getCompleteUser(): " + e.getMessage());
+            System.out.println(hs.getCurrentTime() + " Exception in getCompleteUser(): " + e.getMessage());
         }
 
-        System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Sending all information stored on the user with username " + username);
+        System.out.println(hs.getCurrentTime() + " Sending all information stored on the user with username " + username);
         return items;
     }
 
@@ -147,11 +146,11 @@ public class UserMethods {
             pstmt.setString(3, userName);
 
             if (pstmt.executeUpdate() > 0) {
-                System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Updated user with username " + userName + " to {" + newUserName + ", " + fid + "}");
+                System.out.println(hs.getCurrentTime() + " Updated user with username " + userName + " to {" + newUserName + ", " + fid + "}");
                 return true;
             }
         } catch (SQLException e) {
-            System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in updateUser(): " + e.getMessage());
+            System.out.println(hs.getCurrentTime() + " Exception in updateUser(): " + e.getMessage());
         }
 
         return false;
@@ -167,11 +166,11 @@ public class UserMethods {
             pstmt.setString(1, userName);
 
             if (pstmt.executeUpdate() > 0) {
-                System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Deleted user with username " + userName);
+                System.out.println(hs.getCurrentTime() + " Deleted user with username " + userName);
                 return true;
             }
         } catch (SQLException e) {
-            System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in deleteUser(): " + e.getMessage());
+            System.out.println(hs.getCurrentTime() + " Exception in deleteUser(): " + e.getMessage());
         }
 
         return false;

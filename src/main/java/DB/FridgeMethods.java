@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class FridgeMethods {
 
@@ -23,11 +22,11 @@ public class FridgeMethods {
             pstmt.setInt(4, amount);
 
             if (pstmt.executeUpdate() > 0) {
-                System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Created new fridge item {" + fid + ", " + itemid + ", " + expiration + ", " + amount + "}");
+                System.out.println(hs.getCurrentTime() + " Created new fridge item {" + fid + ", " + itemid + ", " + expiration + ", " + amount + "}");
                 return true;
             }
         } catch (SQLException e) {
-            System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in createFridgeRow(): " + e.getMessage());
+            System.out.println(hs.getCurrentTime() + " Exception in createFridgeRow(): " + e.getMessage());
         }
 
         return false;
@@ -54,10 +53,10 @@ public class FridgeMethods {
             itemInfo[3] = Integer.toString((rset.getInt(hs.Qamount)));
             fridgeItem.add(itemInfo);
         } catch (SQLException e) {
-            System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in getFridgeItem(): " + e.getMessage());
+            System.out.println(hs.getCurrentTime() + " Exception in getFridgeItem(): " + e.getMessage());
         }
 
-        System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Sending fridge item with fridgeID " + fid + " and itemID " + itemid);
+        System.out.println(hs.getCurrentTime() + " Sending fridge item with fridgeID " + fid + " and itemID " + itemid);
         return fridgeItem;
     }
 
@@ -84,10 +83,10 @@ public class FridgeMethods {
                 items.add(itemInfo);
             }
         } catch (SQLException e) {
-            System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in getFridge: " + e.getMessage());
+            System.out.println(hs.getCurrentTime() + " Exception in getFridge: " + e.getMessage());
         }
 
-        System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Sending items in fridge with ID " + fid);
+        System.out.println(hs.getCurrentTime() + " Sending items in fridge with ID " + fid);
         return items;
     }
 
@@ -112,10 +111,10 @@ public class FridgeMethods {
                 items.add(itemInfo);
             }
         } catch (SQLException e) {
-            System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in getAllFridgeRows(): " + e.getMessage());
+            System.out.println(hs.getCurrentTime() + " Exception in getAllFridgeRows(): " + e.getMessage());
         }
 
-        System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Sending everything in the fridge table");
+        System.out.println(hs.getCurrentTime() + " Sending everything in the fridge table");
         return items;
     }
 
@@ -146,10 +145,10 @@ public class FridgeMethods {
                 items.add(item);
             }
         } catch (SQLException e) {
-            System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in getFridgeContents(): " + e.getMessage());
+            System.out.println(hs.getCurrentTime() + " Exception in getFridgeContents(): " + e.getMessage());
         }
 
-        System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Sending all info on fridge with ID " + fid);
+        System.out.println(hs.getCurrentTime() + " Sending all info on fridge with ID " + fid);
         return items;
     }
 
@@ -167,11 +166,11 @@ public class FridgeMethods {
             pstmt.setInt(6, itemid);
 
             if (pstmt.executeUpdate() > 0) {
-                System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Updated fridge item with fridgeID " + fid + " and itemID " + itemid + " to {" + newFid + ", " + newItemid + ", " + newExpiration + ", " + newAmount + "}");
+                System.out.println(hs.getCurrentTime() + " Updated fridge item with fridgeID " + fid + " and itemID " + itemid + " to {" + newFid + ", " + newItemid + ", " + newExpiration + ", " + newAmount + "}");
                 return true;
             }
         } catch (SQLException e) {
-            System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in updateFridgeRow(): " + e.getMessage());
+            System.out.println(hs.getCurrentTime() + " Exception in updateFridgeRow(): " + e.getMessage());
         }
 
         return false;
@@ -187,11 +186,11 @@ public class FridgeMethods {
             pstmt.setInt(2, itemid);
 
             if (pstmt.executeUpdate() > 0) {
-                System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Deleted fridge item with fridgeID " + fid + " and itemID " + itemid);
+                System.out.println(hs.getCurrentTime() + " Deleted fridge item with fridgeID " + fid + " and itemID " + itemid);
                 return true;
             }
         } catch (SQLException e) {
-            System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in deleteFridgeRow(): " + e.getMessage());
+            System.out.println(hs.getCurrentTime() + " Exception in deleteFridgeRow(): " + e.getMessage());
         }
 
         return false;

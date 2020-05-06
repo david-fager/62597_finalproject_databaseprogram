@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class TypeMethods {
 
@@ -20,7 +19,7 @@ public class TypeMethods {
 
             int nextFreeID = hs.getNextFreeID("Type", hs.QtypeID);
             if (nextFreeID < 1) {
-                System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " ID out of bounds");
+                System.out.println(hs.getCurrentTime() + " ID out of bounds");
                 return false;
             }
 
@@ -29,11 +28,11 @@ public class TypeMethods {
             pstmt.setInt(3, keep);
 
             if (pstmt.executeUpdate() > 0) {
-                System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Created new type {" + nextFreeID + ", " + name + ", " + keep + "}");
+                System.out.println(hs.getCurrentTime() + " Created new type {" + nextFreeID + ", " + name + ", " + keep + "}");
                 return true;
             }
         } catch (SQLException e) {
-            System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in createType(): " + e.getMessage());
+            System.out.println(hs.getCurrentTime() + " Exception in createType(): " + e.getMessage());
         }
 
         return false;
@@ -60,10 +59,10 @@ public class TypeMethods {
             itemInfo[2] = Integer.toString(rset.getInt(hs.Qkeep));
             type.add(itemInfo);
         } catch (SQLException e) {
-            System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in getType(): " + e.getMessage());
+            System.out.println(hs.getCurrentTime() + " Exception in getType(): " + e.getMessage());
         }
 
-        System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Sending type with ID " + typeid);
+        System.out.println(hs.getCurrentTime() + " Sending type with ID " + typeid);
         return type;
     }
 
@@ -87,10 +86,10 @@ public class TypeMethods {
                 types.add(typeInfo);
             }
         } catch (SQLException e) {
-            System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in : getTypes()" + e.getMessage());
+            System.out.println(hs.getCurrentTime() + " Exception in : getTypes()" + e.getMessage());
         }
 
-        System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Sending all types");
+        System.out.println(hs.getCurrentTime() + " Sending all types");
         return types;
     }
 
@@ -106,11 +105,11 @@ public class TypeMethods {
             pstmt.setInt(4, typeid);
 
             if (pstmt.executeUpdate() > 0) {
-                System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Updated type with ID " + typeid + " to {" + newTypeid + ", " + typeName + ", " + keep + "}");
+                System.out.println(hs.getCurrentTime() + " Updated type with ID " + typeid + " to {" + newTypeid + ", " + typeName + ", " + keep + "}");
                 return true;
             }
         } catch (SQLException e) {
-            System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in updateType: " + e.getMessage());
+            System.out.println(hs.getCurrentTime() + " Exception in updateType: " + e.getMessage());
         }
 
         return false;
@@ -125,11 +124,11 @@ public class TypeMethods {
             pstmt.setInt(1, typeid);
 
             if (pstmt.executeUpdate() > 0) {
-                System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Deleted type with ID " + typeid);
+                System.out.println(hs.getCurrentTime() + " Deleted type with ID " + typeid);
                 return true;
             }
         } catch (SQLException e) {
-            System.out.println(hs.df.format(Calendar.getInstance().getTimeInMillis()) + " Exception in deleteType(): " + e.getMessage());
+            System.out.println(hs.getCurrentTime() + " Exception in deleteType(): " + e.getMessage());
         }
 
         return false;
