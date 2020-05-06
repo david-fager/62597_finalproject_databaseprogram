@@ -9,12 +9,12 @@ import java.util.ArrayList;
 
 public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
 
-    private HelperSingleton hs = HelperSingleton.getInstance();
+    private final HelperSingleton hs = HelperSingleton.getInstance();
 
-    private UserMethods um;
-    private FridgeMethods fm;
-    private ItemMethods im;
-    private TypeMethods tm;
+    private final UserMethods um;
+    private final FridgeMethods fm;
+    private final ItemMethods im;
+    private final TypeMethods tm;
 
     public DB_RMI(UserMethods um, FridgeMethods fm, ItemMethods im, TypeMethods tm) throws RemoteException {
         this.um = um;
@@ -24,12 +24,12 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
     }
 
     @Override
-    public ArrayList<String[]> getTables() throws RemoteException {
+    public ArrayList<String[]> getTables() {
         return hs.getTables();
     }
 
     @Override
-    public String adminLogin(String username, String password) throws RemoteException {
+    public String adminLogin(String username, String password) {
         return hs.adminLogin(username, password);
     }
 
