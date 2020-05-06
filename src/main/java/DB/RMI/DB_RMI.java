@@ -26,14 +26,17 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
     @Override
     public ArrayList<String[]> getTables(String uuid) throws RemoteException {
         if (!hs.validateUUID(uuid)) {
-            throw new RemoteException();
+            String[] err = {"re-login"};
+            ArrayList<String[]> error = new ArrayList<>();
+            error.add(err);
+            return error;
         }
         return hs.getTables();
     }
 
     @Override
     public String adminLogin(String username, String password) {
-        return hs.adminLogin(username, password);
+        return hs.adminLogin(username, password, "");
     }
 
 
@@ -58,7 +61,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
         if (!hs.validateUUID(uuid)) {
             throw new RemoteException();
         }
-        return um.getUsers();
+        return null;
     }
 
     @Override

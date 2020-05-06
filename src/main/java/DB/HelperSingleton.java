@@ -1,5 +1,12 @@
 package DB;
 
+import brugerautorisation.data.Bruger;
+import brugerautorisation.transport.rmi.Brugeradmin;
+
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.sql.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -12,7 +19,8 @@ public class HelperSingleton {
 
     private static final HelperSingleton helperSingleton = new HelperSingleton();
     public final DateFormat df = new SimpleDateFormat("[dd-MM-yyyy HH:mm:ss]");
-    public HashMap<String, String> sessions = new HashMap<>();
+    public HashMap<String, UserProfile> sessions = new HashMap<>();
+    private final long halfHourInMillis = 1800000; //10000;
 
     //Global names for sql Queries
     //User
@@ -105,19 +113,60 @@ public class HelperSingleton {
         return tables;
     }
 
-    public String adminLogin(String username, String password) {
+    public String adminLogin(String username, String password, String ip) {
+        String uuid = null;
 
-        String uuid = UUID.randomUUID().toString();
+        try {
+            // RMI connection to the user authentication system on javabog.dk server
+            Brugeradmin brugeradmin = (Brugeradmin) Naming.lookup("rmi://javabog.dk/brugeradmin");
+            Bruger bruger = brugeradmin.hentBruger(username, password);
 
-        while(uuid.equals("")) {
+            if (!bruger.brugernavn.equals(username) || !bruger.adgangskode.equals(password)) {
+                System.out.println(getCurrentTime() + " Username " + username + " failed to login");
+
+            }
+
+            // Giving the legitimate user their uuid
             uuid = UUID.randomUUID().toString();
+            while(sessions.containsKey(uuid)) {
+                uuid = UUID.randomUUID().toString();
+            }
+            System.out.println(getCurrentTime() + " New user got uuid: " + uuid);
+
+            // Making a profile of the user
+            UserProfile userProfile = new UserProfile();
+            userProfile.setUsername(username);
+            userProfile.setIp(ip);
+            userProfile.setLoginAtTime(Calendar.getInstance().getTimeInMillis());
+            userProfile.setLastSeenTime(Calendar.getInstance().getTimeInMillis());
+
+            // Adding user profile to map of profiles
+            sessions.put(uuid, userProfile);
+
+            System.out.println(getCurrentTime() + " Made " + sessions.get(uuid).toString());
+
+        } catch (NotBoundException | MalformedURLException | RemoteException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            System.out.println(getCurrentTime() + " Exception in adminLogin(): " + e.getMessage());
         }
 
         return uuid;
     }
 
     public boolean validateUUID(String uuid) {
-        System.out.println(uuid);
+        System.out.println(getCurrentTime() + " Validating " + sessions.get(uuid).toString());
+
+        if (!sessions.containsKey(uuid)) {
+            System.out.println(getCurrentTime() + " Access denied, user (uuid) " + uuid + " not recognized");
+            return false;
+        }
+
+        if (Calendar.getInstance().getTimeInMillis() - sessions.get(uuid).getLastSeenTime() > halfHourInMillis) {
+            System.out.println(getCurrentTime() + " Access denied, user (uuid) " + uuid + " timed out, re-login required");
+            return false;
+        }
+
         return true;
     }
 

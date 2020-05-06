@@ -1,4 +1,4 @@
-package Authorization;
+package brugerautorisation.data;
 
 import java.io.Serializable;
 import java.util.HashMap;
