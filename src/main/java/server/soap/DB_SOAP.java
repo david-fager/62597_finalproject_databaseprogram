@@ -37,7 +37,7 @@ public class DB_SOAP implements SkeletonSOAP {
     public ResponseObject getTables(String uuid) {
         // Printing request info
         HttpExchange exchange = (HttpExchange) context.getMessageContext().get(JAXWSProperties.HTTP_EXCHANGE);
-        System.out.println(hs.logRequest("", "getTables()", exchange));
+        System.out.println(hs.logRequest(uuid, "getTables()", exchange));
 
         // Validating the uuid (user)
         ResponseObject ro = hs.validateUUID(uuid);
@@ -64,7 +64,7 @@ public class DB_SOAP implements SkeletonSOAP {
     public ResponseObject createUser(String uuid, String userName) {
         // Printing request info
         HttpExchange exchange = (HttpExchange) context.getMessageContext().get(JAXWSProperties.HTTP_EXCHANGE);
-        System.out.println(hs.logRequest("", "createUser()", exchange));
+        System.out.println(hs.logRequest(uuid, "createUser()", exchange));
 
         // Validating the uuid (user)
         ResponseObject ro = hs.validateUUID(uuid);
@@ -80,7 +80,7 @@ public class DB_SOAP implements SkeletonSOAP {
     public ResponseObject getUser(String uuid, String userName) {
         // Printing request info
         HttpExchange exchange = (HttpExchange) context.getMessageContext().get(JAXWSProperties.HTTP_EXCHANGE);
-        System.out.println(hs.logRequest("", "getUser()", exchange));
+        System.out.println(hs.logRequest(uuid, "getUser()", exchange));
 
         // Validating the uuid (user)
         ResponseObject ro = hs.validateUUID(uuid);
@@ -96,7 +96,7 @@ public class DB_SOAP implements SkeletonSOAP {
     public ResponseObject getUsers(String uuid) {
         // Printing request info
         HttpExchange exchange = (HttpExchange) context.getMessageContext().get(JAXWSProperties.HTTP_EXCHANGE);
-        System.out.println(hs.logRequest("", "getUsers()", exchange));
+        System.out.println(hs.logRequest(uuid, "getUsers()", exchange));
 
         // Validating the uuid (user)
         ResponseObject ro = hs.validateUUID(uuid);
@@ -112,7 +112,7 @@ public class DB_SOAP implements SkeletonSOAP {
     public ResponseObject getCompleteUser(String uuid, String username) {
         // Printing request info
         HttpExchange exchange = (HttpExchange) context.getMessageContext().get(JAXWSProperties.HTTP_EXCHANGE);
-        System.out.println(hs.logRequest("", "getCompleteUser()", exchange));
+        System.out.println(hs.logRequest(uuid, "getCompleteUser()", exchange));
 
         // Validating the uuid (user)
         ResponseObject ro = hs.validateUUID(uuid);
@@ -128,7 +128,7 @@ public class DB_SOAP implements SkeletonSOAP {
     public ResponseObject updateUser(String uuid, String newUserName, int fid, String userName) {
         // Printing request info
         HttpExchange exchange = (HttpExchange) context.getMessageContext().get(JAXWSProperties.HTTP_EXCHANGE);
-        System.out.println(hs.logRequest("", "updateUser()", exchange));
+        System.out.println(hs.logRequest(uuid, "updateUser()", exchange));
 
         // Validating the uuid (user)
         ResponseObject ro = hs.validateUUID(uuid);
@@ -144,7 +144,7 @@ public class DB_SOAP implements SkeletonSOAP {
     public ResponseObject deleteUser(String uuid, String userName) {
         // Printing request info
         HttpExchange exchange = (HttpExchange) context.getMessageContext().get(JAXWSProperties.HTTP_EXCHANGE);
-        System.out.println(hs.logRequest("", "deleteUser()", exchange));
+        System.out.println(hs.logRequest(uuid, "deleteUser()", exchange));
 
         // Validating the uuid (user)
         ResponseObject ro = hs.validateUUID(uuid);
@@ -161,7 +161,7 @@ public class DB_SOAP implements SkeletonSOAP {
     public ResponseObject createItem(String uuid, String name, int typeID) {
         // Printing request info
         HttpExchange exchange = (HttpExchange) context.getMessageContext().get(JAXWSProperties.HTTP_EXCHANGE);
-        System.out.println(hs.logRequest("", "createItem()", exchange));
+        System.out.println(hs.logRequest(uuid, "createItem()", exchange));
 
         // Validating the uuid (user)
         ResponseObject ro = hs.validateUUID(uuid);
@@ -177,7 +177,7 @@ public class DB_SOAP implements SkeletonSOAP {
     public ResponseObject getItem(String uuid, int itemID) {
         // Printing request info
         HttpExchange exchange = (HttpExchange) context.getMessageContext().get(JAXWSProperties.HTTP_EXCHANGE);
-        System.out.println(hs.logRequest("", "getItem()", exchange));
+        System.out.println(hs.logRequest(uuid, "getItem()", exchange));
 
         // Validating the uuid (user)
         ResponseObject ro = hs.validateUUID(uuid);
@@ -193,7 +193,7 @@ public class DB_SOAP implements SkeletonSOAP {
     public ResponseObject getItems(String uuid) {
         // Printing request info
         HttpExchange exchange = (HttpExchange) context.getMessageContext().get(JAXWSProperties.HTTP_EXCHANGE);
-        System.out.println(hs.logRequest("", "getItems()", exchange));
+        System.out.println(hs.logRequest(uuid, "getItems()", exchange));
 
         // Validating the uuid (user)
         ResponseObject ro = hs.validateUUID(uuid);
@@ -209,7 +209,7 @@ public class DB_SOAP implements SkeletonSOAP {
     public ResponseObject updateItem(String uuid, int itemid, String itemName, int typeid, int newitemid) {
         // Printing request info
         HttpExchange exchange = (HttpExchange) context.getMessageContext().get(JAXWSProperties.HTTP_EXCHANGE);
-        System.out.println(hs.logRequest("", "updateItem()", exchange));
+        System.out.println(hs.logRequest(uuid, "updateItem()", exchange));
 
         // Validating the uuid (user)
         ResponseObject ro = hs.validateUUID(uuid);
@@ -225,7 +225,7 @@ public class DB_SOAP implements SkeletonSOAP {
     public ResponseObject deleteItem(String uuid, int itemid) {
         // Printing request info
         HttpExchange exchange = (HttpExchange) context.getMessageContext().get(JAXWSProperties.HTTP_EXCHANGE);
-        System.out.println(hs.logRequest("", "deleteItem()", exchange));
+        System.out.println(hs.logRequest(uuid, "deleteItem()", exchange));
 
         // Validating the uuid (user)
         ResponseObject ro = hs.validateUUID(uuid);
@@ -242,7 +242,7 @@ public class DB_SOAP implements SkeletonSOAP {
     public ResponseObject createType(String uuid, String name, int keep) {
         // Printing request info
         HttpExchange exchange = (HttpExchange) context.getMessageContext().get(JAXWSProperties.HTTP_EXCHANGE);
-        System.out.println(hs.logRequest("", "createType()", exchange));
+        System.out.println(hs.logRequest(uuid, "createType()", exchange));
 
         // Validating the uuid (user)
         ResponseObject ro = hs.validateUUID(uuid);
@@ -258,7 +258,7 @@ public class DB_SOAP implements SkeletonSOAP {
     public ResponseObject getType(String uuid, int typeID) {
         // Printing request info
         HttpExchange exchange = (HttpExchange) context.getMessageContext().get(JAXWSProperties.HTTP_EXCHANGE);
-        System.out.println(hs.logRequest("", "getType()", exchange));
+        System.out.println(hs.logRequest(uuid, "getType()", exchange));
 
         // Validating the uuid (user)
         ResponseObject ro = hs.validateUUID(uuid);
@@ -274,7 +274,7 @@ public class DB_SOAP implements SkeletonSOAP {
     public ResponseObject getTypes(String uuid) {
         // Printing request info
         HttpExchange exchange = (HttpExchange) context.getMessageContext().get(JAXWSProperties.HTTP_EXCHANGE);
-        System.out.println(hs.logRequest("", "getTypes()", exchange));
+        System.out.println(hs.logRequest(uuid, "getTypes()", exchange));
 
         // Validating the uuid (user)
         ResponseObject ro = hs.validateUUID(uuid);
@@ -290,7 +290,7 @@ public class DB_SOAP implements SkeletonSOAP {
     public ResponseObject updateType(String uuid, int typeID, String typeName, int keep, int newTypeID) {
         // Printing request info
         HttpExchange exchange = (HttpExchange) context.getMessageContext().get(JAXWSProperties.HTTP_EXCHANGE);
-        System.out.println(hs.logRequest("", "updateType()", exchange));
+        System.out.println(hs.logRequest(uuid, "updateType()", exchange));
 
         // Validating the uuid (user)
         ResponseObject ro = hs.validateUUID(uuid);
@@ -306,7 +306,7 @@ public class DB_SOAP implements SkeletonSOAP {
     public ResponseObject deleteType(String uuid, int typeID) {
         // Printing request info
         HttpExchange exchange = (HttpExchange) context.getMessageContext().get(JAXWSProperties.HTTP_EXCHANGE);
-        System.out.println(hs.logRequest("", "deleteType()", exchange));
+        System.out.println(hs.logRequest(uuid, "deleteType()", exchange));
 
         // Validating the uuid (user)
         ResponseObject ro = hs.validateUUID(uuid);
@@ -323,7 +323,7 @@ public class DB_SOAP implements SkeletonSOAP {
     public ResponseObject createFridgeRow(String uuid, int fid, int itemid, String expiration, int amount) {
         // Printing request info
         HttpExchange exchange = (HttpExchange) context.getMessageContext().get(JAXWSProperties.HTTP_EXCHANGE);
-        System.out.println(hs.logRequest("", "createFridgeRow()", exchange));
+        System.out.println(hs.logRequest(uuid, "createFridgeRow()", exchange));
 
         // Validating the uuid (user)
         ResponseObject ro = hs.validateUUID(uuid);
@@ -339,7 +339,7 @@ public class DB_SOAP implements SkeletonSOAP {
     public ResponseObject getFridgeItem(String uuid, int fid, int itemid) {
         // Printing request info
         HttpExchange exchange = (HttpExchange) context.getMessageContext().get(JAXWSProperties.HTTP_EXCHANGE);
-        System.out.println(hs.logRequest("", "getFridgeItem()", exchange));
+        System.out.println(hs.logRequest(uuid, "getFridgeItem()", exchange));
 
         // Validating the uuid (user)
         ResponseObject ro = hs.validateUUID(uuid);
@@ -355,7 +355,7 @@ public class DB_SOAP implements SkeletonSOAP {
     public ResponseObject getFridge(String uuid, int fid) {
         // Printing request info
         HttpExchange exchange = (HttpExchange) context.getMessageContext().get(JAXWSProperties.HTTP_EXCHANGE);
-        System.out.println(hs.logRequest("", "getFridge()", exchange));
+        System.out.println(hs.logRequest(uuid, "getFridge()", exchange));
 
         // Validating the uuid (user)
         ResponseObject ro = hs.validateUUID(uuid);
@@ -371,7 +371,7 @@ public class DB_SOAP implements SkeletonSOAP {
     public ResponseObject getAllFridgeRows(String uuid) {
         // Printing request info
         HttpExchange exchange = (HttpExchange) context.getMessageContext().get(JAXWSProperties.HTTP_EXCHANGE);
-        System.out.println(hs.logRequest("", "getAllFridgeRows()", exchange));
+        System.out.println(hs.logRequest(uuid, "getAllFridgeRows()", exchange));
 
         // Validating the uuid (user)
         ResponseObject ro = hs.validateUUID(uuid);
@@ -387,7 +387,7 @@ public class DB_SOAP implements SkeletonSOAP {
     public ResponseObject getFridgeContents(String uuid, int fid) {
         // Printing request info
         HttpExchange exchange = (HttpExchange) context.getMessageContext().get(JAXWSProperties.HTTP_EXCHANGE);
-        System.out.println(hs.logRequest("", "getFridgeContents()", exchange));
+        System.out.println(hs.logRequest(uuid, "getFridgeContents()", exchange));
 
         // Validating the uuid (user)
         ResponseObject ro = hs.validateUUID(uuid);
@@ -403,7 +403,7 @@ public class DB_SOAP implements SkeletonSOAP {
     public ResponseObject updateFridgeRow(String uuid, int fid, int itemid, int newFid, int newItemid, String newExpiration, int newAmount) {
         // Printing request info
         HttpExchange exchange = (HttpExchange) context.getMessageContext().get(JAXWSProperties.HTTP_EXCHANGE);
-        System.out.println(hs.logRequest("", "updateFridgeRow()", exchange));
+        System.out.println(hs.logRequest(uuid, "updateFridgeRow()", exchange));
 
         // Validating the uuid (user)
         ResponseObject ro = hs.validateUUID(uuid);
@@ -419,7 +419,7 @@ public class DB_SOAP implements SkeletonSOAP {
     public ResponseObject deleteFridgeRow(String uuid, int fid, int itemid) {
         // Printing request info
         HttpExchange exchange = (HttpExchange) context.getMessageContext().get(JAXWSProperties.HTTP_EXCHANGE);
-        System.out.println(hs.logRequest("", "deleteFridgeRow()", exchange));
+        System.out.println(hs.logRequest(uuid, "deleteFridgeRow()", exchange));
 
         // Validating the uuid (user)
         ResponseObject ro = hs.validateUUID(uuid);
