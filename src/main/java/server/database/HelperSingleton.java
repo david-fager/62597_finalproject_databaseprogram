@@ -20,10 +20,12 @@ import java.util.UUID;
 
 public class HelperSingleton {
 
-    private static final HelperSingleton helperSingleton = new HelperSingleton();
-    public final DateFormat df = new SimpleDateFormat("[dd-MM-yyyy HH:mm:ss]");
-    public HashMap<String, UserProfile> sessions = new HashMap<>();
-    private final long halfHourInMillis = 1800000; // Half an hour sessions allowed
+    private static final HelperSingleton HELPERSINGLETON = new HelperSingleton();
+    public final DateFormat DF = new SimpleDateFormat("[dd-MM-yyyy HH:mm:ss]");
+    private final long HALFHOURINMILLIS = 1800000; // Half an hour sessions allowed
+    private HashMap<String, UserProfile> sessions = new HashMap<>();
+    private final String STIPULATEDSERVERUUID = "80c95be1-322a-46b5-9f12-f30d3f8a9b78";
+    private boolean serversConnected = false;
 
     //Global names for sql Queries
     //User
@@ -47,19 +49,19 @@ public class HelperSingleton {
     }
 
     public static HelperSingleton getInstance() {
-        return helperSingleton;
+        return HELPERSINGLETON;
     }
 
     // Helper methods
     // Returns the time and the best available user information as string
     public String logInfo(String uuid) {
         if (uuid.equals(""))
-            return df.format(Calendar.getInstance().getTimeInMillis());
+            return DF.format(Calendar.getInstance().getTimeInMillis());
 
         if (sessions.get(uuid) != null)
-            return df.format(Calendar.getInstance().getTimeInMillis()) + " (" + sessions.get(uuid).getUsername() + ")";
+            return DF.format(Calendar.getInstance().getTimeInMillis()) + " (" + sessions.get(uuid).getUsername() + ")";
         else
-            return df.format(Calendar.getInstance().getTimeInMillis()) + " (" + uuid + ")";
+            return DF.format(Calendar.getInstance().getTimeInMillis()) + " (" + uuid + ")";
     }
 
     // To print the request info
@@ -153,7 +155,7 @@ public class HelperSingleton {
 
             // Giving the legitimate user their uuid
             String uuid = UUID.randomUUID().toString();
-            while (sessions.containsKey(uuid)) {
+            while (uuid.equals(STIPULATEDSERVERUUID) || sessions.containsKey(uuid)) {
                 uuid = UUID.randomUUID().toString();
             }
 
@@ -170,7 +172,7 @@ public class HelperSingleton {
 
             System.out.println(logInfo(uuid) + " Hello new user: " + sessions.get(uuid).toString());
 
-            return new ResponseObject(0, "Success", uuid, null, null);
+            return new ResponseObject(0, "Success, new user", uuid, null, null);
         } catch (NotBoundException | MalformedURLException | RemoteException | IllegalArgumentException e) {
             System.out.println(logInfo("") + " Exception in adminLogin(): " + e.getMessage());
             return new ResponseObject(2, e.getMessage(), null, null, null);
@@ -179,21 +181,46 @@ public class HelperSingleton {
 
     // Validates a users (admins) uuid (sees if it can be found in the sessions map)
     public ResponseObject validateUUID(String uuid) {
+
+        // Checking if the 'user' is actually the javalin server - access granted
+        if (uuid.equals(STIPULATEDSERVERUUID)) {
+            System.out.println(logInfo(uuid) + " Access granted, request by javalin server");
+            return new ResponseObject(0, "Success", null, null, null);
+        }
+
+        // Checking if the uuid is even in the hashmap of users
         if (!sessions.containsKey(uuid)) {
             System.out.println(logInfo(uuid) + " Access denied: not recognized");
             return new ResponseObject(3, "Unauthorized access attempt", null, null, null);
         } else {
+            // If user was in hashmap, then set latest seen time to now
             sessions.get(uuid).setLastSeenTime(Calendar.getInstance().getTimeInMillis());
         }
 
-        if (Calendar.getInstance().getTimeInMillis() - sessions.get(uuid).getLastSeenTime() > halfHourInMillis) {
+        // Checking if the user has not been seen by the database for more than 30 min. Then a re-login is required
+        if (Calendar.getInstance().getTimeInMillis() - sessions.get(uuid).getLastSeenTime() > HALFHOURINMILLIS) {
             System.out.println(logInfo(uuid) + " Access denied: timed out, re-login required " + sessions.get(uuid).toString());
             sessions.remove(uuid);
             return new ResponseObject(4, "Timed out, re-login required", null, null, null);
         }
 
+        // If this point is reached, then the user is granted access
         System.out.println(logInfo(uuid) + " Access granted " + sessions.get(uuid).toString());
         return new ResponseObject(0, "Success", null, null, null);
+    }
+
+    public ResponseObject serverToServer(String stipulatedUUID) {
+        if (serversConnected) {
+            System.out.println(logInfo(stipulatedUUID) + " serverToServer(): access denied due to servers already being connected");
+            return new ResponseObject(3, "Unauthorized connection attempt, servers already connected", null, null, null);
+        } else if (stipulatedUUID.equals(STIPULATEDSERVERUUID)){
+            serversConnected = true;
+            System.out.println(logInfo(stipulatedUUID) + " Javalin server successfully connected");
+            return new ResponseObject(0, "Success, welcome Javalin server", null, null, null);
+        } else {
+            System.out.println(logInfo(stipulatedUUID) + " serverToServer(): access denied due to incorrect uuid");
+            return new ResponseObject(3, "Unauthorized connection attempt, incorrect stipulated uuid", null, null, null);
+        }
     }
 
 }

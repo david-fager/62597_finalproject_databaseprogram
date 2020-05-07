@@ -1,8 +1,10 @@
 package common;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ResponseObject {
+public class ResponseObject implements Serializable {
+    private static final long serialVersionUID = 42069;
     private int statusCode; // 0 = success, 1 = failed, 2 = exception, 3 = unauthorized, 4 = re-login
     private String statusMessage;
     private String responseString;
