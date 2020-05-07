@@ -1,9 +1,9 @@
-import DB.FridgeMethods;
-import DB.ItemMethods;
-import DB.RMI.DB_RMI;
-import DB.SOAP.DB_SOAP;
-import DB.TypeMethods;
-import DB.UserMethods;
+import server.database.FridgeMethods;
+import server.database.ItemMethods;
+import server.database.TypeMethods;
+import server.database.UserMethods;
+import server.rmi.DB_RMI;
+import server.soap.DB_SOAP;
 
 import javax.xml.ws.Endpoint;
 import java.net.MalformedURLException;
@@ -38,12 +38,12 @@ public class Run {
         Naming.rebind("rmi://localhost:9921/my_fridge_rmi_remote", rmi);
 
         // Preparing the SOAP
-        soap = new DB_SOAP(um, fm, im, tm) ;
+        soap = new DB_SOAP(um, fm, im, tm);
         Endpoint.publish("http://[::]:58008/my_fridge_soap_remote", soap);
 
         System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Server started");
 
-        }
     }
+}
 
 

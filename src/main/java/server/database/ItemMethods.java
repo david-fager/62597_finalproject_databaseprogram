@@ -1,4 +1,6 @@
-package DB;
+package server.database;
+
+import server.ResponseObject;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,16 +14,17 @@ public class ItemMethods {
 
     //FoodItems
     //Create a food item with itemID = id, Name = name and TypeID = typeID
-    public boolean createItem(String name, int typeid) {
+    public ResponseObject createItem(String uuid, String name, int typeid) {
         String sql = "INSERT INTO Item(" + hs.QitemID + ", " + hs.QitemName + ", " + hs.QtypeID + ") VALUES(?,?,?)";
 
-        try (Connection conn = hs.connectDB()) {
+        try (Connection conn = hs.connectDB(uuid)) {
+            System.out.println(hs.logInfo(uuid) + " Querying database: " + sql);
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
-            int nextFreeID = hs.getNextFreeID("Item", hs.QitemID);
+            int nextFreeID = hs.getNextFreeID(uuid, "Item", hs.QitemID);
             if (nextFreeID < 1) {
-                System.out.println(hs.getCurrentTime() + " ID out of bounds");
-                return false;
+                System.out.println(hs.logInfo(uuid) + " ID out of bounds");
+                return new ResponseObject(1, "Failed", null, null, null);
             }
 
             pstmt.setInt(1, nextFreeID);
@@ -29,18 +32,19 @@ public class ItemMethods {
             pstmt.setInt(3, typeid);
 
             if (pstmt.executeUpdate() > 0) {
-                System.out.println(hs.getCurrentTime() + " Created new item {" + nextFreeID + ", " + name + ", " + typeid + "}");
-                return true;
+                System.out.println(hs.logInfo(uuid) + " Created new item {" + nextFreeID + ", " + name + ", " + typeid + "}");
+                return new ResponseObject(0, "Success", null, null, null);
             }
         } catch (SQLException e) {
-            System.out.println(hs.getCurrentTime() + " Exception in createItem(): " + e.getMessage());
+            System.out.println(hs.logInfo(uuid) + " Exception in createItem(): " + e.getMessage());
+            return new ResponseObject(2, e.getMessage(), null, null, null);
         }
 
-        return false;
+        return new ResponseObject(1, "Failed", null, null, null);
     }
 
     //Returns a string array with info about the item
-    public ArrayList<String[]> getItem(int itemID) {
+    public ResponseObject getItem(String uuid, int itemID) {
         String sql = "SELECT * FROM Item WHERE " + hs.QitemID + "=?";
         ResultSet rset;
         ArrayList<String[]> item = new ArrayList<>();
@@ -48,7 +52,8 @@ public class ItemMethods {
         String[] header = {hs.QitemID, hs.QitemName, hs.QtypeID};
         item.add(header);
 
-        try (Connection conn = hs.connectDB()) {
+        try (Connection conn = hs.connectDB(uuid)) {
+            System.out.println(hs.logInfo(uuid) + " Querying database: " + sql);
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             pstmt.setInt(1, itemID);
@@ -60,21 +65,23 @@ public class ItemMethods {
             itemInfo[2] = Integer.toString(rset.getInt(hs.QtypeID));
             item.add(itemInfo);
         } catch (SQLException e) {
-            System.out.println(hs.getCurrentTime() + " Exception in getItem(): " + e.getMessage());
+            System.out.println(hs.logInfo(uuid) + " Exception in getItem(): " + e.getMessage());
+            return new ResponseObject(2, e.getMessage(), null, null, null);
         }
 
-        System.out.println(hs.getCurrentTime() + " Sending item with ID " + itemID);
-        return item;
+        System.out.println(hs.logInfo(uuid) + " Sending item with ID " + itemID);
+        return new ResponseObject(0, "Success", null, null, item);
     }
 
-    public ArrayList<String[]> getItems() {
+    public ResponseObject getItems(String uuid) {
         String sql = "SELECT * FROM Item ";
         ResultSet rset;
         ArrayList<String[]> items = new ArrayList<>();
         String[] header = {hs.QitemID, hs.QitemName, hs.QtypeID};
         items.add(header);
 
-        try (Connection conn = hs.connectDB()) {
+        try (Connection conn = hs.connectDB(uuid)) {
+            System.out.println(hs.logInfo(uuid) + " Querying database: " + sql);
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             rset = pstmt.executeQuery();
@@ -87,18 +94,20 @@ public class ItemMethods {
                 items.add(itemInfo);
             }
         } catch (SQLException e) {
-            System.out.println(hs.getCurrentTime() + " Exception in getItems(): " + e.getMessage());
+            System.out.println(hs.logInfo(uuid) + " Exception in getItems(): " + e.getMessage());
+            return new ResponseObject(2, e.getMessage(), null, null, null);
         }
 
-        System.out.println(hs.getCurrentTime() + " Sending all items");
-        return items;
+        System.out.println(hs.logInfo(uuid) + " Sending all items");
+        return new ResponseObject(0, "Success", null, null, items);
     }
 
     //Update a fooditem by itemID
-    public boolean updateItem(int itemid, String itemName, int typeid, int newitemid) {
+    public ResponseObject updateItem(String uuid, int itemid, String itemName, int typeid, int newitemid) {
         String sql = "UPDATE ITEM SET " + hs.QitemID + "=?, " + hs.QitemName + "=?, " + hs.QtypeID + "=? WHERE " + hs.QitemID + "=?";
 
-        try (Connection conn = hs.connectDB()) {
+        try (Connection conn = hs.connectDB(uuid)) {
+            System.out.println(hs.logInfo(uuid) + " Querying database: " + sql);
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             pstmt.setInt(1, newitemid);
@@ -107,34 +116,35 @@ public class ItemMethods {
             pstmt.setInt(4, itemid);
 
             if (pstmt.executeUpdate() > 0) {
-                System.out.println(hs.getCurrentTime() + " Updated item with ID " + itemid + " to {" + newitemid + ", " + itemName + ", " + typeid + "}");
-                return true;
+                System.out.println(hs.logInfo(uuid) + " Updated item with ID " + itemid + " to {" + newitemid + ", " + itemName + ", " + typeid + "}");
+                return new ResponseObject(0, "Success", null, null, null);
             }
         } catch (SQLException e) {
-            System.out.println(hs.getCurrentTime() + " Exception in updateItem(): " + e.getMessage());
+            System.out.println(hs.logInfo(uuid) + " Exception in updateItem(): " + e.getMessage());
         }
 
-        return false;
+        return new ResponseObject(1, "Failed", null, null, null);
     }
 
     //Remove an item with ItemID = itemid
-    public boolean deleteItem(int itemid) {
+    public ResponseObject deleteItem(String uuid, int itemid) {
         String sql = "DELETE FROM Item WHERE " + hs.QitemID + "=?";
 
-        try (Connection conn = hs.connectDB()) {
+        try (Connection conn = hs.connectDB(uuid)) {
+            System.out.println(hs.logInfo(uuid) + " Querying database: " + sql);
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             pstmt.setInt(1, itemid);
 
             if (pstmt.executeUpdate() > 0) {
-                System.out.println(hs.getCurrentTime() + " Deleted item with ID " + itemid);
-                return true;
+                System.out.println(hs.logInfo(uuid) + " Deleted item with ID " + itemid);
+                return new ResponseObject(0, "Success", null, null, null);
             }
         } catch (SQLException e) {
-            System.out.println(hs.getCurrentTime() + " Exception in deleteItem(): " + e.getMessage());
+            System.out.println(hs.logInfo(uuid) + " Exception in deleteItem(): " + e.getMessage());
         }
 
-        return false;
+        return new ResponseObject(0, "Failed", null, null, null);
     }
 
 }

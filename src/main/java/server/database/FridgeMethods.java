@@ -1,4 +1,6 @@
-package DB;
+package server.database;
+
+import server.ResponseObject;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,10 +12,11 @@ public class FridgeMethods {
 
     private HelperSingleton hs = HelperSingleton.getInstance();
 
-    public boolean createFridgeRow(int fid, int itemid, String expiration, int amount) {
+    public ResponseObject createFridgeRow(String uuid, int fid, int itemid, String expiration, int amount) {
         String sql = "INSERT INTO Fridge(" + hs.QfridgeID + ", " + hs.QitemID + ", " + hs.Qexp + ", " + hs.Qamount + ") VALUES(?,?,?,?)";
 
-        try (Connection conn = hs.connectDB()) {
+        try (Connection conn = hs.connectDB(uuid)) {
+            System.out.println(hs.logInfo(uuid) + " Querying database: " + sql);
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             pstmt.setInt(1, fid);
@@ -22,24 +25,25 @@ public class FridgeMethods {
             pstmt.setInt(4, amount);
 
             if (pstmt.executeUpdate() > 0) {
-                System.out.println(hs.getCurrentTime() + " Created new fridge item {" + fid + ", " + itemid + ", " + expiration + ", " + amount + "}");
-                return true;
+                System.out.println(hs.logInfo(uuid) + " Created new fridge item {" + fid + ", " + itemid + ", " + expiration + ", " + amount + "}");
+                return new ResponseObject(0, "Success", null, null, null);
             }
         } catch (SQLException e) {
-            System.out.println(hs.getCurrentTime() + " Exception in createFridgeRow(): " + e.getMessage());
+            System.out.println(hs.logInfo(uuid) + " Exception in createFridgeRow(): " + e.getMessage());
         }
 
-        return false;
+        return new ResponseObject(1, "Failed", null, null, null);
     }
 
-    public ArrayList<String[]> getFridgeItem(int fid, int itemid) {
+    public ResponseObject getFridgeItem(String uuid, int fid, int itemid) {
         String sql = "SELECT * FROM Fridge WHERE " + hs.QfridgeID + "=? AND " + hs.QitemID + "=?";
         ResultSet rset;
         ArrayList<String[]> fridgeItem = new ArrayList<>();
         String[] itemInfo = new String[4];
         String[] header = {hs.QfridgeID, hs.QitemID, hs.Qexp, hs.Qamount};
         fridgeItem.add(header);
-        try (Connection conn = hs.connectDB()) {
+        try (Connection conn = hs.connectDB(uuid)) {
+            System.out.println(hs.logInfo(uuid) + " Querying database: " + sql);
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             pstmt.setInt(1, fid);
@@ -53,21 +57,23 @@ public class FridgeMethods {
             itemInfo[3] = Integer.toString((rset.getInt(hs.Qamount)));
             fridgeItem.add(itemInfo);
         } catch (SQLException e) {
-            System.out.println(hs.getCurrentTime() + " Exception in getFridgeItem(): " + e.getMessage());
+            System.out.println(hs.logInfo(uuid) + " Exception in getFridgeItem(): " + e.getMessage());
+            return new ResponseObject(2, e.getMessage(), null, null, null);
         }
 
-        System.out.println(hs.getCurrentTime() + " Sending fridge item with fridgeID " + fid + " and itemID " + itemid);
-        return fridgeItem;
+        System.out.println(hs.logInfo(uuid) + " Sending fridge item with fridgeID " + fid + " and itemID " + itemid);
+        return new ResponseObject(0, "Success", null, null, fridgeItem);
     }
 
-    public ArrayList<String[]> getFridge(int fid) {
+    public ResponseObject getFridge(String uuid, int fid) {
         String sql = "SELECT * FROM Fridge WHERE " + hs.QfridgeID + "=?";
         ResultSet rset;
         ArrayList<String[]> items = new ArrayList<>();
         String[] header = {hs.QfridgeID, hs.QitemID, hs.Qexp, hs.Qamount};
         items.add(header);
 
-        try (Connection conn = hs.connectDB()) {
+        try (Connection conn = hs.connectDB(uuid)) {
+            System.out.println(hs.logInfo(uuid) + " Querying database: " + sql);
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             pstmt.setInt(1, fid);
@@ -83,21 +89,23 @@ public class FridgeMethods {
                 items.add(itemInfo);
             }
         } catch (SQLException e) {
-            System.out.println(hs.getCurrentTime() + " Exception in getFridge: " + e.getMessage());
+            System.out.println(hs.logInfo(uuid) + " Exception in getFridge: " + e.getMessage());
+            return new ResponseObject(2, e.getMessage(), null, null, null);
         }
 
-        System.out.println(hs.getCurrentTime() + " Sending items in fridge with ID " + fid);
-        return items;
+        System.out.println(hs.logInfo(uuid) + " Sending items in fridge with ID " + fid);
+        return new ResponseObject(0, "Success", null, null, items);
     }
 
-    public ArrayList<String[]> getAllFridgeRows() {
+    public ResponseObject getAllFridgeRows(String uuid) {
         String sql = "SELECT * FROM Fridge";
         ResultSet rset;
         ArrayList<String[]> items = new ArrayList<>();
         String[] header = {hs.QfridgeID, hs.QitemID, hs.Qexp, hs.Qamount};
         items.add(header);
 
-        try (Connection conn = hs.connectDB()) {
+        try (Connection conn = hs.connectDB(uuid)) {
+            System.out.println(hs.logInfo(uuid) + " Querying database: " + sql);
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             rset = pstmt.executeQuery();
@@ -111,14 +119,15 @@ public class FridgeMethods {
                 items.add(itemInfo);
             }
         } catch (SQLException e) {
-            System.out.println(hs.getCurrentTime() + " Exception in getAllFridgeRows(): " + e.getMessage());
+            System.out.println(hs.logInfo(uuid) + " Exception in getAllFridgeRows(): " + e.getMessage());
+            return new ResponseObject(2, e.getMessage(), null, null, null);
         }
 
-        System.out.println(hs.getCurrentTime() + " Sending everything in the fridge table");
-        return items;
+        System.out.println(hs.logInfo(uuid) + " Sending everything in the fridge table");
+        return new ResponseObject(0, "Success", null, null, items);
     }
 
-    public ArrayList<String[]> getFridgeContents(int fid) {
+    public ResponseObject getFridgeContents(String uuid, int fid) {
         ArrayList<String[]> items = new ArrayList<>();
         String[] header = {hs.Qamount, hs.Qexp, hs.QitemID, hs.QitemName, hs.Qkeep, hs.QtypeID, "Name"};
         items.add(header);
@@ -126,7 +135,8 @@ public class FridgeMethods {
                 "FROM Fridge JOIN Item ON Fridge." + hs.QitemID + " = Item." + hs.QitemID + " JOIN Type ON Item." + hs.QtypeID + " = Type." + hs.QtypeID + " WHERE " + hs.QfridgeID + "=?";
         ResultSet rset;
 
-        try (Connection conn = hs.connectDB()) {
+        try (Connection conn = hs.connectDB(uuid)) {
+            System.out.println(hs.logInfo(uuid) + " Querying database: " + sql);
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             pstmt.setInt(1, fid);
@@ -145,17 +155,19 @@ public class FridgeMethods {
                 items.add(item);
             }
         } catch (SQLException e) {
-            System.out.println(hs.getCurrentTime() + " Exception in getFridgeContents(): " + e.getMessage());
+            System.out.println(hs.logInfo(uuid) + " Exception in getFridgeContents(): " + e.getMessage());
+            return new ResponseObject(2, e.getMessage(), null, null, null);
         }
 
-        System.out.println(hs.getCurrentTime() + " Sending all info on fridge with ID " + fid);
-        return items;
+        System.out.println(hs.logInfo(uuid) + " Sending all info on fridge with ID " + fid);
+        return new ResponseObject(0, "Success", null, null, items);
     }
 
-    public boolean updateFridgeRow(int fid, int itemid, int newFid, int newItemid, String newExpiration, int newAmount) {
+    public ResponseObject updateFridgeRow(String uuid, int fid, int itemid, int newFid, int newItemid, String newExpiration, int newAmount) {
         String sql = "UPDATE Fridge SET " + hs.QfridgeID + "=?, " + hs.QitemID + "=?, " + hs.Qexp + "=?, " + hs.Qamount + "=? WHERE " + hs.QfridgeID + "=? AND " + hs.QitemID + "=?";
 
-        try (Connection conn = hs.connectDB()) {
+        try (Connection conn = hs.connectDB(uuid)) {
+            System.out.println(hs.logInfo(uuid) + " Querying database: " + sql);
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             pstmt.setInt(1, newFid);
@@ -166,34 +178,37 @@ public class FridgeMethods {
             pstmt.setInt(6, itemid);
 
             if (pstmt.executeUpdate() > 0) {
-                System.out.println(hs.getCurrentTime() + " Updated fridge item with fridgeID " + fid + " and itemID " + itemid + " to {" + newFid + ", " + newItemid + ", " + newExpiration + ", " + newAmount + "}");
-                return true;
+                System.out.println(hs.logInfo(uuid) + " Updated fridge item with fridgeID " + fid + " and itemID " + itemid + " to {" + newFid + ", " + newItemid + ", " + newExpiration + ", " + newAmount + "}");
+                return new ResponseObject(0, "Success", null, null, null);
             }
         } catch (SQLException e) {
-            System.out.println(hs.getCurrentTime() + " Exception in updateFridgeRow(): " + e.getMessage());
+            System.out.println(hs.logInfo(uuid) + " Exception in updateFridgeRow(): " + e.getMessage());
+            return new ResponseObject(2, e.getMessage(), null, null, null);
         }
 
-        return false;
+        return new ResponseObject(1, "Failed", null, null, null);
     }
 
-    public boolean deleteFridgeRow(int fid, int itemid) {
+    public ResponseObject deleteFridgeRow(String uuid, int fid, int itemid) {
         String sql = "DELETE FROM Fridge WHERE " + hs.QfridgeID + "=? AND " + hs.QitemID + "=?";
 
-        try (Connection conn = hs.connectDB()) {
+        try (Connection conn = hs.connectDB(uuid)) {
+            System.out.println(hs.logInfo(uuid) + " Querying database: " + sql);
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             pstmt.setInt(1, fid);
             pstmt.setInt(2, itemid);
 
             if (pstmt.executeUpdate() > 0) {
-                System.out.println(hs.getCurrentTime() + " Deleted fridge item with fridgeID " + fid + " and itemID " + itemid);
-                return true;
+                System.out.println(hs.logInfo(uuid) + " Deleted fridge item with fridgeID " + fid + " and itemID " + itemid);
+                return new ResponseObject(0, "Success", null, null, null);
             }
         } catch (SQLException e) {
-            System.out.println(hs.getCurrentTime() + " Exception in deleteFridgeRow(): " + e.getMessage());
+            System.out.println(hs.logInfo(uuid) + " Exception in deleteFridgeRow(): " + e.getMessage());
+            return new ResponseObject(2, e.getMessage(), null, null, null);
         }
 
-        return false;
+        return new ResponseObject(1, "Failed", null, null, null);
     }
 
 }

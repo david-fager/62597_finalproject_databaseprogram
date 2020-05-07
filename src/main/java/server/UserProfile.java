@@ -1,7 +1,12 @@
-package DB;
+package server;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 public class UserProfile {
+    private final DateFormat df = new SimpleDateFormat("[dd-MM-yyyy HH:mm:ss]");
     private String username;
+    private String uuid;
     private String ip;
     private long loginAtTime;
     private long lastSeenTime;
@@ -10,9 +15,10 @@ public class UserProfile {
     public String toString() {
         return "UserProfile{" +
                 "username='" + username + '\'' +
+                ", uuid='" + uuid + '\'' +
                 ", ip='" + ip + '\'' +
-                ", loginAtTime=" + loginAtTime +
-                ", lastSeenTime=" + lastSeenTime +
+                ", loginAtTime=" + df.format(loginAtTime) +
+                ", lastSeenTime=" + df.format(lastSeenTime) +
                 '}';
     }
 
@@ -22,6 +28,14 @@ public class UserProfile {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public String getIp() {
@@ -47,6 +61,5 @@ public class UserProfile {
     public void setLastSeenTime(long lastSeenTime) {
         this.lastSeenTime = lastSeenTime;
     }
-
 
 }

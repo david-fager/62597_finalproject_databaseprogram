@@ -1,30 +1,31 @@
-package DB;
+package server;
 
 import java.util.ArrayList;
 
 public class ResponseObject {
-    private int errorCode;
+    private int statusCode; // 0 = success, 1 = failed, 2 = exception, 3 = unauthorized, 4 = re-login
     private String statusMessage;
-    private boolean success;
     private String responseString;
     private String[] responseStringArray;
     private ArrayList<String[]> responseArraylist;
 
-    public ResponseObject(int errorCode, String statusMessage, boolean success, String responseString, String[] responseStringArray, ArrayList<String[]> responseArraylist) {
-        this.errorCode = errorCode;
+    public ResponseObject(int statusCode, String statusMessage, String responseString, String[] responseStringArray, ArrayList<String[]> responseArraylist) {
+        this.statusCode = statusCode;
         this.statusMessage = statusMessage;
-        this.success = success;
         this.responseString = responseString;
         this.responseStringArray = responseStringArray;
         this.responseArraylist = responseArraylist;
     }
 
-    public int getErrorCode() {
-        return errorCode;
+    public ResponseObject() {
     }
 
-    public void setErrorCode(int errorCode) {
-        this.errorCode = errorCode;
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public void setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
     }
 
     public String getStatusMessage() {
@@ -33,14 +34,6 @@ public class ResponseObject {
 
     public void setStatusMessage(String statusMessage) {
         this.statusMessage = statusMessage;
-    }
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public void setSuccess(boolean success) {
-        this.success = success;
     }
 
     public String getResponseString() {

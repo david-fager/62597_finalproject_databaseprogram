@@ -1,4 +1,6 @@
-package DB;
+package server.database;
+
+import server.ResponseObject;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,21 +11,22 @@ import java.util.ArrayList;
 public class UserMethods {
 
     private HelperSingleton hs = HelperSingleton.getInstance();
-    
+
     //User
     //Creates a user and assigns a him a fridgeID
-    public boolean createUser(String userName) {
+    public ResponseObject createUser(String uuid, String userName) {
         String sql = "INSERT INTO User(" + hs.Qusername + ", " + hs.QfridgeID + ") VALUES(?,?)";
 
-        try (Connection conn = hs.connectDB()) {
+        try (Connection conn = hs.connectDB(uuid)) {
+            System.out.println(hs.logInfo(uuid) + " Querying database: " + sql);
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             pstmt.setString(1, userName);
 
-            int nextFreeID = hs.getNextFreeID("User", hs.QfridgeID);
+            int nextFreeID = hs.getNextFreeID(uuid, "User", hs.QfridgeID);
             if (nextFreeID < 1) {
-                System.out.println(hs.getCurrentTime() + " ID out of bounds");
-                return false;
+                System.out.println(hs.logInfo(uuid) + " ID out of bounds");
+                return new ResponseObject(1, "Failed", null, null, null);
             }
 
             pstmt.setInt(2, nextFreeID);
@@ -31,25 +34,27 @@ public class UserMethods {
             int i = pstmt.executeUpdate();
 
             if (i > 0) {
-                System.out.println(hs.getCurrentTime() + " Created new user {" + userName + ", " + nextFreeID + "}");
-                return true;
+                System.out.println(hs.logInfo(uuid) + " Created new user {" + userName + ", " + nextFreeID + "}");
+                return new ResponseObject(0, "Success", null, null, null);
             }
         } catch (SQLException e) {
-            System.out.println(hs.getCurrentTime() + " Exception in createUser(): " + e.getMessage());
+            System.out.println(hs.logInfo(uuid) + " Exception in createUser(): " + e.getMessage());
+            return new ResponseObject(2, e.getMessage(), null, null, null);
         }
 
-        return false;
+        return new ResponseObject(1, "Failed", null, null, null);
     }
 
     //Returns an int array containing userid and fridgeid
-    public ArrayList<String[]> getUser(String userName) {
+    public ResponseObject getUser(String uuid, String userName) {
         String sql = "SELECT * FROM User WHERE " + hs.Qusername + "=?";
         ResultSet rset;
         ArrayList<String[]> users = new ArrayList<>();
         String[] header = {"UserID", hs.QfridgeID};
         users.add(header);
 
-        try (Connection conn = hs.connectDB()) {
+        try (Connection conn = hs.connectDB(uuid)) {
+            System.out.println(hs.logInfo(uuid) + " Querying database: " + sql);
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             pstmt.setString(1, userName);
@@ -62,22 +67,24 @@ public class UserMethods {
             users.add(userInfo);
 
         } catch (SQLException e) {
-            System.out.println(hs.getCurrentTime() + " Exception in getUser(): " + e.getMessage());
+            System.out.println(hs.logInfo(uuid) + " Exception in getUser(): " + e.getMessage());
+            return new ResponseObject(2, e.getMessage(), null, null, null);
         }
 
-        System.out.println(hs.getCurrentTime() + " Sending user with username " + userName);
-        return users;
+        System.out.println(hs.logInfo(uuid) + " Sending user with username " + userName);
+        return new ResponseObject(0, "Success", null, null, users);
     }
 
     //Gets all users in an Arraylist of int arrays
-    public ArrayList<String[]> getUsers() {
+    public ResponseObject getUsers(String uuid) {
         String sql = "SELECT * FROM User ";
         ResultSet rset;
         ArrayList<String[]> users = new ArrayList<>();
         String[] header = {"UserID", hs.QfridgeID};
         users.add(header);
 
-        try (Connection conn = hs.connectDB()) {
+        try (Connection conn = hs.connectDB(uuid)) {
+            System.out.println(hs.logInfo(uuid) + " Querying database: " + sql);
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             rset = pstmt.executeQuery();
@@ -90,14 +97,15 @@ public class UserMethods {
             }
 
         } catch (SQLException e) {
-            System.out.println(hs.getCurrentTime() + " Exception in getUsers(): " + e.getMessage());
+            System.out.println(hs.logInfo(uuid) + " Exception in getUsers(): " + e.getMessage());
+            return new ResponseObject(2, e.getMessage(), null, null, null);
         }
 
-        System.out.println(hs.getCurrentTime() + " Sending all users");
-        return users;
+        System.out.println(hs.logInfo(uuid) + " Sending all users");
+        return new ResponseObject(0, "Success", null, null, users);
     }
 
-    public ArrayList<String[]> getCompleteUser(String username) {
+    public ResponseObject getCompleteUser(String uuid, String username) {
         ArrayList<String[]> items = new ArrayList<>();
         String[] header = {hs.Qusername, hs.QfridgeID, hs.Qamount, hs.QitemID, hs.Qexp, hs.QitemName, hs.QtypeID, hs.QtypeName, hs.Qkeep};
         items.add(header);
@@ -106,7 +114,8 @@ public class UserMethods {
                 "JOIN Type ON Item." + hs.QtypeID + " = Type." + hs.QtypeID + " WHERE " + hs.Qusername + " = ?";
         ResultSet rset;
 
-        try (Connection conn = hs.connectDB()) {
+        try (Connection conn = hs.connectDB(uuid)) {
+            System.out.println(hs.logInfo(uuid) + " Querying database: " + sql);
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             pstmt.setString(1, username);
@@ -127,18 +136,20 @@ public class UserMethods {
                 items.add(item);
             }
         } catch (SQLException e) {
-            System.out.println(hs.getCurrentTime() + " Exception in getCompleteUser(): " + e.getMessage());
+            System.out.println(hs.logInfo(uuid) + " Exception in getCompleteUser(): " + e.getMessage());
+            return new ResponseObject(2, e.getMessage(), null, null, null);
         }
 
-        System.out.println(hs.getCurrentTime() + " Sending all information stored on the user with username " + username);
-        return items;
+        System.out.println(hs.logInfo(uuid) + " Sending all information stored on the user with username " + username);
+        return new ResponseObject(0, "Success", null, null, items);
     }
 
     //Update userID and fridgeID of user with userID = uid
-    public boolean updateUser(String userName, int fid, String newUserName) {
+    public ResponseObject updateUser(String uuid, String userName, int fid, String newUserName) {
         String sql = "UPDATE User SET " + hs.Qusername + "=?, " + hs.QfridgeID + "=? WHERE " + hs.Qusername + "=?";
 
-        try (Connection conn = hs.connectDB()) {
+        try (Connection conn = hs.connectDB(uuid)) {
+            System.out.println(hs.logInfo(uuid) + " Querying database: " + sql);
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             pstmt.setString(1, newUserName);
@@ -146,34 +157,35 @@ public class UserMethods {
             pstmt.setString(3, userName);
 
             if (pstmt.executeUpdate() > 0) {
-                System.out.println(hs.getCurrentTime() + " Updated user with username " + userName + " to {" + newUserName + ", " + fid + "}");
-                return true;
+                System.out.println(hs.logInfo(uuid) + " Updated user {" + newUserName + ", " + fid + "}");
+                return new ResponseObject(0, "Success", null, null, null);
             }
         } catch (SQLException e) {
-            System.out.println(hs.getCurrentTime() + " Exception in updateUser(): " + e.getMessage());
+            System.out.println(hs.logInfo(uuid) + " Exception in updateUser(): " + e.getMessage());
         }
 
-        return false;
+        return new ResponseObject(1, "Failed", null, null, null);
     }
 
     //Deletes a user by its userID
-    public boolean deleteUser(String userName) {
+    public ResponseObject deleteUser(String uuid, String userName) {
         String sql = "DELETE FROM User WHERE " + hs.Qusername + "=?";
 
-        try (Connection conn = hs.connectDB()) {
+        try (Connection conn = hs.connectDB(uuid)) {
+            System.out.println(hs.logInfo(uuid) + " Querying database: " + sql);
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             pstmt.setString(1, userName);
 
             if (pstmt.executeUpdate() > 0) {
-                System.out.println(hs.getCurrentTime() + " Deleted user with username " + userName);
-                return true;
+                System.out.println(hs.logInfo(uuid) + " Deleted user with username " + userName);
+                return new ResponseObject(0, "Success", null, null, null);
             }
         } catch (SQLException e) {
-            System.out.println(hs.getCurrentTime() + " Exception in deleteUser(): " + e.getMessage());
+            System.out.println(hs.logInfo(uuid) + " Exception in deleteUser(): " + e.getMessage());
         }
 
-        return false;
+        return new ResponseObject(1, "Failed", null, null, null);
     }
-    
+
 }
