@@ -211,14 +211,14 @@ public class HelperSingleton {
 
     public ResponseObject serverToServer(String stipulatedUUID) {
         if (serversConnected) {
-            System.out.println(logInfo(stipulatedUUID) + " serverToServer(): access denied due to servers already being connected");
+            System.out.println(logInfo(stipulatedUUID) + " serverToServer(): connection denied due to servers already being connected");
             return new ResponseObject(3, "Unauthorized connection attempt, servers already connected", null, null, null);
         } else if (stipulatedUUID.equals(STIPULATEDSERVERUUID)){
             serversConnected = true;
-            System.out.println(logInfo(stipulatedUUID) + " Javalin server successfully connected");
+            System.out.println(logInfo(stipulatedUUID) + " serverToServer(): connection granted, javalin server successfully connected");
             return new ResponseObject(0, "Success, welcome Javalin server", null, null, null);
         } else {
-            System.out.println(logInfo(stipulatedUUID) + " serverToServer(): access denied due to incorrect uuid");
+            System.out.println(logInfo(stipulatedUUID) + " serverToServer(): connection denied due to incorrect uuid");
             return new ResponseObject(3, "Unauthorized connection attempt, incorrect stipulated uuid", null, null, null);
         }
     }

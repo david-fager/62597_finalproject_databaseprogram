@@ -67,7 +67,7 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
         if (ro.getStatusCode() != 0) {
             return ro;
         }
-        return null;
+        return um.getUsers(uuid);
     }
 
     @Override
