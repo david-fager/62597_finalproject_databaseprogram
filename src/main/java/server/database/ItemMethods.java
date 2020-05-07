@@ -1,6 +1,6 @@
 package server.database;
 
-import server.ResponseObject;
+import common.ResponseObject;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

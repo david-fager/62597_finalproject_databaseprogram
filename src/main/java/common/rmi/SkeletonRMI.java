@@ -1,6 +1,6 @@
 package common.rmi;
 
-import server.ResponseObject;
+import common.ResponseObject;
 
 import java.sql.SQLException;
 

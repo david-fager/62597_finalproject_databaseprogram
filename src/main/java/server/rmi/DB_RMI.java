@@ -1,7 +1,7 @@
 package server.rmi;
 
 import common.rmi.SkeletonRMI;
-import server.ResponseObject;
+import common.ResponseObject;
 import server.database.*;
 
 import java.rmi.RemoteException;

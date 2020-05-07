@@ -1,6 +1,6 @@
 package common.soap;
 
-import server.ResponseObject;
+import common.ResponseObject;
 
 import javax.jws.WebMethod;
 import javax.jws.WebService;

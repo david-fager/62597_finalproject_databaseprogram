@@ -3,7 +3,7 @@ package server.soap;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.xml.internal.ws.developer.JAXWSProperties;
 import common.soap.SkeletonSOAP;
-import server.ResponseObject;
+import common.ResponseObject;
 import server.database.*;
 
 import javax.annotation.Resource;

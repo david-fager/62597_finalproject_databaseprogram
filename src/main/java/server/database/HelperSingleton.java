@@ -3,7 +3,7 @@ package server.database;
 import brugerautorisation.data.Bruger;
 import brugerautorisation.transport.rmi.Brugeradmin;
 import com.sun.net.httpserver.HttpExchange;
-import server.ResponseObject;
+import common.ResponseObject;
 import server.UserProfile;
 
 import java.net.MalformedURLException;
