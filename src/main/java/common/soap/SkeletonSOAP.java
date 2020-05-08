@@ -15,10 +15,7 @@ public interface SkeletonSOAP {
     ResponseObject getTables(String uuid) throws RemoteException;
 
     @WebMethod
-    ResponseObject adminLogin(String username, String password) throws RemoteException;
-
-    @WebMethod
-    ResponseObject serverConnect(String stipulatedUUID) throws RemoteException;
+    ResponseObject login(String username, String password) throws RemoteException;
 
 
     @WebMethod

@@ -8,7 +8,7 @@ public class UserProfile {
     private String username;
     private String uuid;
     private String ip;
-    private long loginAtTime;
+    private long loginTime;
     private long lastSeenTime;
 
     @Override
@@ -17,7 +17,7 @@ public class UserProfile {
                 "username='" + username + '\'' +
                 ", uuid='" + uuid + '\'' +
                 ", ip='" + ip + '\'' +
-                ", loginAtTime=" + df.format(loginAtTime) +
+                ", loginAtTime=" + df.format(loginTime) +
                 ", lastSeenTime=" + df.format(lastSeenTime) +
                 '}';
     }
@@ -46,12 +46,12 @@ public class UserProfile {
         this.ip = ip;
     }
 
-    public long getLoginAtTime() {
-        return loginAtTime;
+    public long getLoginTime() {
+        return loginTime;
     }
 
-    public void setLoginAtTime(long loginAtTime) {
-        this.loginAtTime = loginAtTime;
+    public void setLoginTime(long loginTime) {
+        this.loginTime = loginTime;
     }
 
     public long getLastSeenTime() {

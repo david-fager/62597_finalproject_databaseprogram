@@ -22,10 +22,8 @@ public class HelperSingleton {
 
     private static final HelperSingleton HELPERSINGLETON = new HelperSingleton();
     public final DateFormat DF = new SimpleDateFormat("[dd-MM-yyyy HH:mm:ss]");
-    private final long HALFHOURINMILLIS = 1800000; // Half an hour sessions allowed
+    private final long FULLDAYINMILLIS = 86400000;
     private HashMap<String, UserProfile> sessions = new HashMap<>();
-    private final String STIPULATEDSERVERUUID = "80c95be1-322a-46b5-9f12-f30d3f8a9b78";
-    private boolean serversConnected = false;
 
     //Global names for sql Queries
     //User
@@ -138,24 +136,38 @@ public class HelperSingleton {
     }
 
     // Logs in users from the admin console (python) program
-    public ResponseObject adminLogin(String username, String password, String ip) {
+    public ResponseObject login(String username, String password, String ip) {
         try {
             // RMI connection to the user authentication system on javabog.dk server
             Brugeradmin brugeradmin = (Brugeradmin) Naming.lookup("rmi://javabog.dk/brugeradmin");
             Bruger bruger = brugeradmin.hentBruger(username, password);
 
-            // Remove the UserProfile, if the user already has one
+            // Checking the user object we got from javabog
             if (bruger != null) {
+                // Making sure the object from javabog has the same username and password, as the user provided
+                if (!bruger.brugernavn.equals(username) || !bruger.adgangskode.equals(password)) {
+                    System.out.println(logInfo("") + " Failed login by user " + username);
+                    return new ResponseObject(1, "Failed", null, null, null);
+                }
+
+                // Checking if the user has already logged in to this server before
                 for (String key : sessions.keySet()) {
                     if (sessions.get(key).getUsername().equals(bruger.brugernavn)) {
-                        sessions.remove(key);
+                        // If the user has an old login session, then remove that session, else send the old uuid to them
+                        if (Calendar.getInstance().getTimeInMillis() - sessions.get(key).getLoginTime() > FULLDAYINMILLIS) {
+                            sessions.remove(key);
+                            break;
+                        } else {
+                            System.out.println(logInfo(key) + " Hello again: " + sessions.get(key).toString());
+                            return new ResponseObject(0, "Success", sessions.get(key).getUuid(), null, null);
+                        }
                     }
                 }
             }
 
             // Giving the legitimate user their uuid
             String uuid = UUID.randomUUID().toString();
-            while (uuid.equals(STIPULATEDSERVERUUID) || sessions.containsKey(uuid)) {
+            while (sessions.containsKey(uuid)) {
                 uuid = UUID.randomUUID().toString();
             }
 
@@ -164,29 +176,23 @@ public class HelperSingleton {
             userProfile.setUsername(username);
             userProfile.setUuid(uuid);
             userProfile.setIp(ip);
-            userProfile.setLoginAtTime(Calendar.getInstance().getTimeInMillis());
+            userProfile.setLoginTime(Calendar.getInstance().getTimeInMillis());
             userProfile.setLastSeenTime(Calendar.getInstance().getTimeInMillis());
 
             // Adding user profile to map of profiles
             sessions.put(uuid, userProfile);
 
             System.out.println(logInfo(uuid) + " Hello new user: " + sessions.get(uuid).toString());
-
             return new ResponseObject(0, "Success, new user", uuid, null, null);
+
         } catch (NotBoundException | MalformedURLException | RemoteException | IllegalArgumentException e) {
-            System.out.println(logInfo("") + " Exception in adminLogin(): " + e.getMessage());
+            System.out.println(logInfo("") + " Exception in login(): " + e.getMessage());
             return new ResponseObject(2, e.getMessage(), null, null, null);
         }
     }
 
     // Validates a users (admins) uuid (sees if it can be found in the sessions map)
     public ResponseObject validateUUID(String uuid) {
-
-        // Checking if the 'user' is actually the javalin server - access granted
-        if (uuid.equals(STIPULATEDSERVERUUID)) {
-            System.out.println(logInfo(uuid) + " Access granted, request by javalin server");
-            return new ResponseObject(0, "Success", null, null, null);
-        }
 
         // Checking if the uuid is even in the hashmap of users
         if (!sessions.containsKey(uuid)) {
@@ -197,8 +203,8 @@ public class HelperSingleton {
             sessions.get(uuid).setLastSeenTime(Calendar.getInstance().getTimeInMillis());
         }
 
-        // Checking if the user has not been seen by the database for more than 30 min. Then a re-login is required
-        if (Calendar.getInstance().getTimeInMillis() - sessions.get(uuid).getLastSeenTime() > HALFHOURINMILLIS) {
+        // Checking if the user has not been seen by the database for more than the variable, then a re-login is required
+        if (Calendar.getInstance().getTimeInMillis() - sessions.get(uuid).getLoginTime() > FULLDAYINMILLIS) {
             System.out.println(logInfo(uuid) + " Access denied: timed out, re-login required " + sessions.get(uuid).toString());
             sessions.remove(uuid);
             return new ResponseObject(4, "Timed out, re-login required", null, null, null);
@@ -207,20 +213,6 @@ public class HelperSingleton {
         // If this point is reached, then the user is granted access
         System.out.println(logInfo(uuid) + " Access granted " + sessions.get(uuid).toString());
         return new ResponseObject(0, "Success", null, null, null);
-    }
-
-    public ResponseObject serverToServer(String stipulatedUUID) {
-        if (serversConnected) {
-            System.out.println(logInfo(stipulatedUUID) + " serverToServer(): connection denied due to servers already being connected");
-            return new ResponseObject(3, "Unauthorized connection attempt, servers already connected", null, null, null);
-        } else if (stipulatedUUID.equals(STIPULATEDSERVERUUID)){
-            serversConnected = true;
-            System.out.println(logInfo(stipulatedUUID) + " serverToServer(): connection granted, javalin server successfully connected");
-            return new ResponseObject(0, "Success, welcome Javalin server", null, null, null);
-        } else {
-            System.out.println(logInfo(stipulatedUUID) + " serverToServer(): connection denied due to incorrect uuid");
-            return new ResponseObject(3, "Unauthorized connection attempt, incorrect stipulated uuid", null, null, null);
-        }
     }
 
 }

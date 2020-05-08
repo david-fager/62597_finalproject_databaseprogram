@@ -9,7 +9,6 @@ import server.database.*;
 import javax.annotation.Resource;
 import javax.jws.WebService;
 import javax.xml.ws.WebServiceContext;
-import java.rmi.RemoteException;
 
 @SuppressWarnings("/NonAsciiCharacters")
 @WebService(endpointInterface = "common.soap.SkeletonSOAP")
@@ -51,18 +50,13 @@ public class DB_SOAP implements SkeletonSOAP {
     }
 
     @Override
-    public ResponseObject adminLogin(String username, String password) {
+    public ResponseObject login(String username, String password) {
         // Printing request info
         HttpExchange exchange = (HttpExchange) context.getMessageContext().get(JAXWSProperties.HTTP_EXCHANGE);
         System.out.println(hs.logRequest("", "adminLogin()", exchange));
 
         // Calling the method that creates a proper response
-        return hs.adminLogin(username, password, exchange.getRemoteAddress().getAddress().toString());
-    }
-
-    @Override
-    public ResponseObject serverConnect(String stipulatedUUID) {
-        return hs.serverToServer(stipulatedUUID);
+        return hs.login(username, password, exchange.getRemoteAddress().getAddress().toString());
     }
 
 
