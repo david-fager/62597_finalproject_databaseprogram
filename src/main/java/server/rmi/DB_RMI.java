@@ -37,6 +37,11 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
         return hs.login(username, password, "");
     }
 
+    @Override
+    public ResponseObject validateUUID(String uuid) throws RemoteException {
+        return validateUUID(uuid);
+    }
+
 
     @Override
     public ResponseObject createUser(String uuid, String userName) {

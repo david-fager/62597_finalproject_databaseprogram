@@ -17,6 +17,9 @@ public interface SkeletonSOAP {
     @WebMethod
     ResponseObject login(String username, String password) throws RemoteException;
 
+    @WebMethod
+    ResponseObject validateUUID(String uuid) throws RemoteException;
+
 
     @WebMethod
     ResponseObject createUser(String uuid, String newUserName) throws RemoteException;

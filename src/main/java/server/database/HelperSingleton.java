@@ -23,6 +23,7 @@ public class HelperSingleton {
     private static final HelperSingleton HELPERSINGLETON = new HelperSingleton();
     public final DateFormat DF = new SimpleDateFormat("[dd-MM-yyyy HH:mm:ss]");
     private final long FULLDAYINMILLIS = 86400000;
+    private final long HALFHOURINMILLIS = 1800000;
     private HashMap<String, UserProfile> sessions = new HashMap<>();
 
     //Global names for sql Queries
@@ -198,16 +199,19 @@ public class HelperSingleton {
         if (!sessions.containsKey(uuid)) {
             System.out.println(logInfo(uuid) + " Access denied: not recognized");
             return new ResponseObject(3, "Unauthorized access attempt", null, null, null);
+        }
+
+        // Checking if the user has been away from the system long enough for them to need to do a re-login
+        if (Calendar.getInstance().getTimeInMillis() - sessions.get(uuid).getLastSeenTime() > HALFHOURINMILLIS
+                || Calendar.getInstance().getTimeInMillis() - sessions.get(uuid).getLoginTime() > FULLDAYINMILLIS) {
+
+            System.out.println(logInfo(uuid) + " Access denied: timed out, re-login required " + sessions.get(uuid).toString());
+            sessions.remove(uuid);
+
+            return new ResponseObject(4, "Timed out, re-login required", null, null, null);
         } else {
             // If user was in hashmap, then set latest seen time to now
             sessions.get(uuid).setLastSeenTime(Calendar.getInstance().getTimeInMillis());
-        }
-
-        // Checking if the user has not been seen by the database for more than the variable, then a re-login is required
-        if (Calendar.getInstance().getTimeInMillis() - sessions.get(uuid).getLoginTime() > FULLDAYINMILLIS) {
-            System.out.println(logInfo(uuid) + " Access denied: timed out, re-login required " + sessions.get(uuid).toString());
-            sessions.remove(uuid);
-            return new ResponseObject(4, "Timed out, re-login required", null, null, null);
         }
 
         // If this point is reached, then the user is granted access
