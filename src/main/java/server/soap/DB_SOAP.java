@@ -61,8 +61,8 @@ public class DB_SOAP implements SkeletonSOAP {
     }
 
     @Override
-    public ResponseObject validateUUID(String uuid) throws RemoteException {
-        return validateUUID(uuid);
+    public ResponseObject validateUUID(String uuid) {
+        return hs.validateUUID(uuid);
     }
 
 

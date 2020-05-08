@@ -38,8 +38,8 @@ public class DB_RMI extends UnicastRemoteObject implements SkeletonRMI {
     }
 
     @Override
-    public ResponseObject validateUUID(String uuid) throws RemoteException {
-        return validateUUID(uuid);
+    public ResponseObject validateUUID(String uuid) {
+        return hs.validateUUID(uuid);
     }
 
 

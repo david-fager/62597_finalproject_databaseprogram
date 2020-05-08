@@ -131,7 +131,7 @@ public class FridgeMethods {
         ArrayList<String[]> items = new ArrayList<>();
         String[] header = {hs.Qamount, hs.Qexp, hs.QitemID, hs.QitemName, hs.Qkeep, hs.QtypeID, hs.QtypeName};
         items.add(header);
-        String sql = "SELECT " + hs.QfridgeID + ", Fridge." + hs.QitemID + ", " + hs.Qamount + ", " + hs.Qexp + ", " + hs.QitemName + ", Type." + hs.QtypeID + ", " + hs.QtypeName + ", " + hs.Qkeep + "\n" +
+        String sql = "SELECT " + hs.QfridgeID + ", Fridge." + hs.QitemID + ", " + hs.Qamount + ", " + hs.Qexp + ", " + hs.QitemName + ", Type." + hs.QtypeID + ", " + hs.QtypeName + ", " + hs.Qkeep + " " +
                 "FROM Fridge JOIN Item ON Fridge." + hs.QitemID + " = Item." + hs.QitemID + " JOIN Type ON Item." + hs.QtypeID + " = Type." + hs.QtypeID + " WHERE " + hs.QfridgeID + "=?";
         ResultSet rset;
 
