@@ -129,7 +129,7 @@ public class FridgeMethods {
 
     public ResponseObject getFridgeContents(String uuid, int fid) {
         ArrayList<String[]> items = new ArrayList<>();
-        String[] header = {hs.Qamount, hs.Qexp, hs.QitemID, hs.QitemName, hs.Qkeep, hs.QtypeID, "Name"};
+        String[] header = {hs.Qamount, hs.Qexp, hs.QitemID, hs.QitemName, hs.Qkeep, hs.QtypeID, hs.QtypeName};
         items.add(header);
         String sql = "SELECT " + hs.QfridgeID + ", Fridge." + hs.QitemID + ", " + hs.Qamount + ", " + hs.Qexp + ", " + hs.QitemName + ", Type." + hs.QtypeID + ", " + hs.QtypeName + ", " + hs.Qkeep + "\n" +
                 "FROM Fridge JOIN Item ON Fridge." + hs.QitemID + " = Item." + hs.QitemID + " JOIN Type ON Item." + hs.QtypeID + " = Type." + hs.QtypeID + " WHERE " + hs.QfridgeID + "=?";
@@ -151,7 +151,7 @@ public class FridgeMethods {
                 item[3] = rset.getString(hs.QitemName);
                 item[4] = Integer.toString(rset.getInt(hs.Qkeep));
                 item[5] = Integer.toString(rset.getInt(hs.QtypeID));
-                item[6] = rset.getString("Name");
+                item[6] = rset.getString(hs.QtypeName);
                 items.add(item);
             }
         } catch (SQLException e) {
