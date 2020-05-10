@@ -33,7 +33,7 @@ public class ItemMethods {
 
             if (pstmt.executeUpdate() > 0) {
                 System.out.println(hs.logInfo(uuid) + " Created new item {" + nextFreeID + ", " + name + ", " + typeid + "}");
-                return new ResponseObject(0, "Success", null, null, null);
+                return new ResponseObject(0, "Success", String.valueOf(nextFreeID), null, null);
             }
         } catch (SQLException e) {
             System.out.println(hs.logInfo(uuid) + " Exception in createItem(): " + e.getMessage());
