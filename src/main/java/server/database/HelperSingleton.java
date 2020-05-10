@@ -91,7 +91,7 @@ public class HelperSingleton {
     public int getNextFreeID(String uuid, String tableName, String columnName) {
         String sql = "SELECT max(" + columnName + ") FROM " + tableName;
         ResultSet rset;
-        int nextFreeID = 0;
+        int nextFreeID = 1;
 
         try (Connection conn = connectDB(uuid)) {
             System.out.println(logInfo(uuid) + " Querying database: " + sql);
