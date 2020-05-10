@@ -64,8 +64,8 @@ public class HelperSingleton {
     }
 
     // To print the request info
-    public String logRequest(String uuid, String methodname, HttpExchange exchange) {
-        String returnString = logInfo(uuid) + " " + methodname + " " + exchange.getRemoteAddress()
+    public String soapLogRequest(String uuid, String methodname, HttpExchange exchange) {
+        String returnString = logInfo(uuid) + " SOAP " + methodname + " " + exchange.getRemoteAddress()
                 + " -> " + exchange.getLocalAddress() + " " + exchange.getProtocol() + " " + exchange.getRequestMethod();
         for (String key : exchange.getRequestHeaders().keySet()) {
             returnString += " " + exchange.getRequestHeaders().get(key);
