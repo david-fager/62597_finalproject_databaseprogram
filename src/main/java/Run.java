@@ -33,7 +33,7 @@ public class Run {
         tm = new TypeMethods();
 
         // Preparing the RMI
-        System.setProperty("java.rmi.server.hostname","130.225.170.204");
+        System.setProperty("java.rmi.server.hostname","dist-ipv6.saluton.dk");
         java.rmi.registry.LocateRegistry.createRegistry(9921);
         rmi = new DB_RMI(um, fm, im, tm);
         Naming.rebind("rmi://localhost:9921/my_fridge_rmi_remote", rmi);
