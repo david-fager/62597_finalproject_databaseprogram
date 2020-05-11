@@ -33,6 +33,7 @@ public class Run {
         tm = new TypeMethods();
 
         // Preparing the RMI
+        System.setProperty("java.rmi.server.hostname","130.225.170.204");
         java.rmi.registry.LocateRegistry.createRegistry(9921);
         rmi = new DB_RMI(um, fm, im, tm);
         Naming.rebind("rmi://localhost:9921/my_fridge_rmi_remote", rmi);
@@ -41,9 +42,21 @@ public class Run {
         soap = new DB_SOAP(um, fm, im, tm);
         Endpoint.publish("http://[::]:58008/my_fridge_soap_remote", soap);
 
+        printASCII();
+
         System.out.println(df.format(Calendar.getInstance().getTimeInMillis()) + " Server started");
 
     }
+
+    private static void printASCII() {
+        System.out.println("   ____   ____    _   _   ____    ____    _____     _    ___        ");
+        System.out.println("  / ___| |  _ \\  | | | | |  _ \\  |  _ \\  | ____|   / |  / _ \\   ");
+        System.out.println(" | |  _  | |_) | | | | | | |_) | | |_) | |  _|     | | | | | |      ");
+        System.out.println(" | |_| | |  _ <  | |_| | |  __/  |  __/  | |___    | | | |_| |      ");
+        System.out.println("  \\____| |_| \\_\\  \\___/  |_|     |_|     |_____|   |_|  \\___/  ");
+        System.out.println("                                                                    ");
+    }
+
 }
 
 
